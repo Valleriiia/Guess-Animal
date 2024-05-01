@@ -1,14 +1,13 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-
+typedef struct treeNode treeNode;
 struct treeNode {
     string text;
     treeNode *yes, *no;
 };
 
-void readFromFile(treeNode* &root) {
-    ifstream file("animals_tree.txt");
+void readFromFile(treeNode* &root, ifstream& file) {
     string input;
     getline(file, input);
     if (input == "#") {
@@ -17,6 +16,22 @@ void readFromFile(treeNode* &root) {
     }
     root = new treeNode();
     root->text = input;
-    readFromFile(root->yes);
-    readFromFile(root->no);
+    input.clear();
+    readFromFile(root->yes, file);
+    readFromFile(root->no, file);
+}
+
+void writeToFile(treeNode *root, ofstream& file) {
+    
+    if (root == NULL) {
+        file << "#" << endl;
+        return;
+    }
+    file <<  root->text << endl;
+    writeToFile(root->yes, file);
+    writeToFile(root->no, file);
+}
+
+int main() {
+    
 }

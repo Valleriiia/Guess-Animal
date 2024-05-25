@@ -15,10 +15,10 @@ public:
 };
 
 void Game::setLanguage() {
-    cout  << "\nLanguage" << endl << endl;
+    cout  << ((lang == ukr) ? "\nМова" : "\nLanguage") << endl << endl;
     cout << "1. English" << endl;
     cout << "2. Українська" << endl << endl;
-    cout << "Your  choice: ";
+    cout << ((lang == ukr) ? "Ваш вибір: " : "Your  choice: ");
     int choice;
     cin >> choice;
     switch (choice) {
@@ -31,7 +31,7 @@ void Game::setLanguage() {
         break;
     
     default:
-        cout << "Incorrect number! Try again" << endl;
+        cout << ((lang == ukr) ? "Неправельне введення! Спробуйте ще раз" : "Incorrect number! Try again") << endl;
         setLanguage();
     }
 }
@@ -194,9 +194,13 @@ public:
 };
 
 void thinkingGame::addQuestion(treeNode* &node) {
-    cout << "What's your animal?" << endl;
+    cout << ((lang == ukr) ? "Яку тварину ві загадали?" : "What's your animal?") << endl;
     string newAnimal = userInput::inputAnimal(lang);
-    cout << "Enter the question in such a way that for " << newAnimal << " the answer to it is yes, and for " << node->text << " it is no" << endl;
+    if (lang == ukr) {
+        cout << "Введіть питання таке, щоб для " << newAnimal << " відповідь на нього була так, а для " << node->text << " - ні" << endl;
+    } else {
+        cout << "Enter the question in such a way that for " << newAnimal << " the answer to it is yes, and for " << node->text << " it is no" << endl;
+    }
     string question = userInput::inputQuestion();
     treeNode *yes = new treeNode();
     yes->text = newAnimal;
@@ -205,17 +209,17 @@ void thinkingGame::addQuestion(treeNode* &node) {
     node->text = question;
     node->yes = yes;
     node->no = no;
-    cout << "Your animal was added successful" << endl;
+    cout << ((lang == ukr) ? "Вашу тварину було успішно додано" : "Your animal was added successful") << endl;
 }
 
 void thinkingGame::question(treeNode *root) {
     if (root->yes == NULL ||  root->no == NULL) {
-        cout << "Is your animal " << root->text << endl;
+        cout << ((lang == ukr) ? "Ваша тварина - це " : "Is your animal ") << root->text << endl;
         bool ans = (lang == ukr) ? userInput::getUkrAnswer() : userInput::getEngAnswer();
         if (ans) {
-            cout << "cool!" << endl;
+            cout << ((lang == ukr) ? "Круто!" : "Cool!") << endl;
         } else {
-            cout << "hmmm..." << endl;
+            cout << ((lang == ukr) ? "хммм..." : "hmmm...") << endl;
             addQuestion(root);
         }
         return;
@@ -239,14 +243,14 @@ void show(treeNode *root) {
 }
 
 void Game::menu() {
-    cout << "\nГра \"Тварини\"" << endl << endl;
-    cout << "Меню:" << endl;
-    cout << "1. Загадай тварину" << endl;
-    cout << "2. Відгадай тварину" << endl;
-    cout << "3. Мова (Language)" << endl;
-    cout << "4. Правила" << endl;
-    cout << "5. Вихід" << endl;
-    cout << "Введіть номер з меню: ";
+    cout << ((lang == ukr) ? "\nГра \"Тварини\"" : "\nGame \"Animals\"") << endl << endl;
+    cout << ((lang == ukr) ? "Меню:" : "Menu:") << endl;
+    cout << ((lang == ukr) ? "1. Загадай тварину" : "1. Think about an animal") << endl;
+    cout << ((lang == ukr) ? "2. Відгадай тварину" : "2. Guess the animal") << endl;
+    cout << ((lang == ukr) ? "3. Мова (Language)" : "3. Language") << endl;
+    cout << ((lang == ukr) ? "4. Правила" : "4. Rules") << endl;
+    cout << ((lang == ukr) ? "5. Вихід" : "5. Exit") << endl;
+    cout << ((lang == ukr) ? "Введіть номер з меню: " : "Enter the number from the menu: ");
     int choice;
     cin >> choice;
     cin.ignore();
@@ -272,14 +276,18 @@ void Game::menu() {
             exit(0);
         
         default:
-            cout << "Invalid input. Try again." << endl;
+            cout << ((lang == ukr) ? "Неправельне введення! Спробуйте ще раз" : "Invalid input. Try again.") << endl;
             menu();
     }                                        
 }
 
 void thinkingGame::play() {
     files.readFromFile(treeRoot);
-    cout << "Think of animal? I try to guess it for you! Tap enter to start" << endl;
+    if (lang == ukr) {
+        cout << "Загадайте тварину, я спробую її вгадати. Натисніть enter , щоб розпочати";
+    } else {
+        cout << "Think of animal, I try to guess it for you! Tap enter to start";
+    }
     cin.get();
     question(treeRoot);
     files.writeToFile(treeRoot);

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <regex>
 using namespace std;
 
 enum Language {ukr, eng};
@@ -18,9 +19,9 @@ void Game::setLanguage() {
     cout << "1. English" << endl;
     cout << "2. Українська" << endl << endl;
     cout << "Your  choice: ";
-    int lang;
-    cin >> lang;
-    switch (lang) {
+    int choice;
+    cin >> choice;
+    switch (choice) {
     case 1:
         lang = eng;
         break;
@@ -62,6 +63,7 @@ void fileMeneger::readFromFile(treeNode* &root) {
         exit(1);
     }
     read(root);
+    file.close();
 }
 
 void fileMeneger::read(treeNode* &root) {
@@ -80,12 +82,13 @@ void fileMeneger::read(treeNode* &root) {
 }
 
 void fileMeneger::writeToFile(treeNode *root) {
-    file.open(filename, ios::out);
+    file.open(filename, ios::out | ios::trunc);
     if (!file.is_open()) {
         cout << "File not found" << endl;
         exit(1);
     }
     write(root);
+    file.close();
 }
 
 void fileMeneger::write(treeNode *root) {
@@ -99,11 +102,88 @@ void fileMeneger::write(treeNode *root) {
     write(root->no);
 }
 
+class userInput {
+public:
+    static bool getUkrAnswer();
+    static bool getEngAnswer();
+    static string inputAnimal(Language lang);
+    static string inputQuestion();
+};
+
+bool userInput::getEngAnswer() {
+    string answer;
+    cin >> answer;
+    if(answer == "yes" || answer == "y"){
+        return true;
+    } else if (answer == "no" || answer == "n"){
+        return false;
+    }else{
+        cout << "Invalid response! Try again" << endl;
+        return getEngAnswer();
+    }
+}
+
+bool userInput::getUkrAnswer() {
+    string answer;
+    cin >> answer;
+    if(answer == "так" || answer == "та" || answer == "т"){
+        return true;
+    } else if (answer == "ні" || answer == "н"){
+        return false;
+    }else{
+        cout << "Неправельне введення! Спробуйте ще раз" << endl;
+        return getUkrAnswer();
+    }
+}
+
+string userInput::inputAnimal(Language lang) {
+    string newAnimal;
+    cin.ignore();
+    getline(cin, newAnimal);
+    regex pattern("\\s+");
+    newAnimal = regex_replace(newAnimal, pattern, " ");
+    if (lang == eng) {
+        if (!(newAnimal.substr(0, 2) == "a " || newAnimal.substr(0, 3) == "an ")) {
+            char first = newAnimal[0];
+            newAnimal = ((first == 'a' || first == 'e' || first == 'u' || first == 'i' || first == 'o') ? "an " : "a ") + newAnimal;
+        }
+        if (islower(newAnimal[2]) && islower(newAnimal[3])) {
+            if(isspace(newAnimal[2])) {
+                newAnimal[3] = toupper(newAnimal[3]);
+            } else {
+                newAnimal[2] = toupper(newAnimal[2]);
+            }
+        }
+    } else {
+        if (islower(newAnimal[0])) {
+            newAnimal[0] = toupper(newAnimal[0]);
+        }
+    }
+    return newAnimal;
+}
+
+string userInput::inputQuestion() {
+    string question;
+    cin.ignore();
+    getline(cin, question);
+    regex pattern("\\s+");
+
+    question = regex_replace(question, pattern, " ");
+    if (islower(question[0])) {
+        question[0] = toupper(question[0]);
+    }
+    if (question[question.length()-1] != '?') {
+        question = question + "?";
+    }
+    return question;
+}
+
 class thinkingGame : public Game {
     treeNode* treeRoot;
     fileMeneger files;
 public:
-    thinkingGame() : Game() {
+    thinkingGame(Language l) {
+        lang = l;
         treeRoot = NULL;
         string filename = (lang == ukr) ? "animals_tree_ukr.txt" :  "animals_tree_eng.txt";
         files = fileMeneger(filename);
@@ -113,27 +193,11 @@ public:
     void addQuestion(treeNode* &node);
 };
 
-bool getAnswer() {
-    string answer;
-    cin >> answer;
-    if(answer == "yes" || answer == "y"){
-        return true;
-    } else if (answer == "no" || answer == "n"){
-        return false;
-    }else{
-        cout << "Invalid response! Try again" << endl;
-        return getAnswer();
-    }
-}
-
 void thinkingGame::addQuestion(treeNode* &node) {
     cout << "What's your animal?" << endl;
-    string newAnimal;
-    cin.ignore();
-    getline(cin, newAnimal);
+    string newAnimal = userInput::inputAnimal(lang);
     cout << "Enter the question in such a way that for " << newAnimal << " the answer to it is yes, and for " << node->text << " it is no" << endl;
-    string question;
-    getline(cin, question);
+    string question = userInput::inputQuestion();
     treeNode *yes = new treeNode();
     yes->text = newAnimal;
     treeNode *no = new treeNode();
@@ -147,7 +211,8 @@ void thinkingGame::addQuestion(treeNode* &node) {
 void thinkingGame::question(treeNode *root) {
     if (root->yes == NULL ||  root->no == NULL) {
         cout << "Is your animal " << root->text << endl;
-        if (getAnswer()) {
+        bool ans = (lang == ukr) ? userInput::getUkrAnswer() : userInput::getEngAnswer();
+        if (ans) {
             cout << "cool!" << endl;
         } else {
             cout << "hmmm..." << endl;
@@ -156,7 +221,8 @@ void thinkingGame::question(treeNode *root) {
         return;
     }
     cout << root->text << endl;
-    if (getAnswer()) {
+    bool ans = (lang == ukr) ? userInput::getUkrAnswer() : userInput::getEngAnswer();
+    if (ans) {
         question(root->yes);
     } else {
         question(root->no);
@@ -184,7 +250,7 @@ void Game::menu() {
     int choice;
     cin >> choice;
     cin.ignore();
-    thinkingGame tgame;
+    thinkingGame tgame(lang);
     switch (choice) {
         case 1:
             tgame.play();

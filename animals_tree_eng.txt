@@ -1,5 +1,13 @@
 Does your animal have 4 legs?
 Does your animal say meow?
+Is it big?
+Does it have stripes?
+a Tiger
+#
+#
+a Lion
+#
+#
 a Cat
 #
 #

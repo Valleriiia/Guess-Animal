@@ -151,7 +151,7 @@ public:
 
 private:
 void initAnimals() {
-    if (language == 2) { 
+    if (language == 2) { // Ukrainian
         animals = {
             {"Тигр", {"хижак", "смугастий", "велика", "гострі зуби", "кігті", "швидка", "ссавець"}},
             {"Лев", {"хижак", "грива", "велика", "кігті", "гострі зуби", "швидка", "стадна"}},
@@ -191,9 +191,9 @@ void initAnimals() {
 }
 
 
- void initKeywords() {
-    if (language == 2) { 
-        keywords = {
+    void initKeywords() {
+        if (language == 2) {
+            keywords = {
             {"хижак", {"хижак", "Хижак", "хижий", "Хижий", "хижа", "Хижа"}},
             {"травоїдна", {"травоїдна", "Травоїдна", "травоїдний", "Травоїдний"}},
             {"всеїдна", {"всеїдна", "Всеїдна", "всеїдний", "Всеїдний"}},
@@ -245,9 +245,9 @@ void initAnimals() {
             {"моркву", {"моркву", "Моркву", "морква", "Морква"}},
             {"довгі вуха", {"довгі вуха", "Довгі вуха", "вуха"}},
             {"стрибає", {"стрибає", "Стрибає", "стрибати", "Стрибати"}}
-        };
-    } else { 
-        keywords = {
+            }; 
+        } else {
+            keywords = {
             {"predator", {"predator", "Predator", "predatory", "Predatory"}},
             {"herbivore", {"herbivore", "Herbivore", "herbivorous", "Herbivorous"}},
             {"omnivore", {"omnivore", "Omnivore", "omnivorous", "Omnivorous"}},
@@ -298,9 +298,11 @@ void initAnimals() {
             {"carrots", {"carrots", "Carrots"}},
             {"long ears", {"long ears", "Long ears"}},
             {"hops", {"hops", "Hops", "hopping", "Hopping"}}
-        };
+
+            };
+        }
     }
-}
+};
 
 
 int main() {
@@ -308,5 +310,5 @@ int main() {
     game.play();
     return 0;
 }
-};
+
 

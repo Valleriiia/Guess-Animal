@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <locale>
+#include <codecvt>
 using namespace std;
 
 enum Language {ukr, eng};
@@ -108,6 +110,7 @@ public:
     static bool getEngAnswer();
     static string inputAnimal(Language lang);
     static string inputQuestion();
+    static void removeNonAlphabetic(string &str);
 };
 
 bool userInput::getEngAnswer() {
@@ -140,8 +143,7 @@ string userInput::inputAnimal(Language lang) {
     string newAnimal;
     cin.ignore();
     getline(cin, newAnimal);
-    regex pattern("\\s+");
-    newAnimal = regex_replace(newAnimal, pattern, " ");
+    removeNonAlphabetic(newAnimal);
     if (lang == eng) {
         if (!(newAnimal.substr(0, 2) == "a " || newAnimal.substr(0, 3) == "an ")) {
             char first = newAnimal[0];
@@ -155,27 +157,35 @@ string userInput::inputAnimal(Language lang) {
             }
         }
     } else {
-        if (islower(newAnimal[0])) {
-            newAnimal[0] = toupper(newAnimal[0]);
-        }
+        wstring animal = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(newAnimal);
+        animal[0] = towupper(animal[0]);
+        newAnimal = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(animal);
     }
     return newAnimal;
 }
 
 string userInput::inputQuestion() {
     string question;
-    cin.ignore();
     getline(cin, question);
-    regex pattern("\\s+");
-
-    question = regex_replace(question, pattern, " ");
-    if (islower(question[0])) {
-        question[0] = toupper(question[0]);
-    }
-    if (question[question.length()-1] != '?') {
+    removeNonAlphabetic(question);
+    wstring wquestion = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(question);
+    wquestion[0] = towupper(wquestion[0]);
+    question = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(wquestion);
         question = question + "?";
-    }
     return question;
+}
+
+void userInput::removeNonAlphabetic(string &str) {
+    regex pattern("\\s+");
+    str = regex_replace(str, pattern, " ");
+    wstring wstr = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(str);
+    for (size_t i = 0; i < wstr.length(); i++) {
+        if (!iswalpha(wstr[i]) && !iswspace(wstr[i])) {
+            wstr.erase(i, 1);
+            i--;
+        }
+    }
+    str = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(wstr);
 }
 
 class thinkingGame : public Game {
@@ -194,13 +204,14 @@ public:
 };
 
 void thinkingGame::addQuestion(treeNode* &node) {
-    cout << ((lang == ukr) ? "Яку тварину ві загадали?" : "What's your animal?") << endl;
+    cout << ((lang == ukr) ? "Яку тварину ви загадали?" : "What's your animal?") << endl;
     string newAnimal = userInput::inputAnimal(lang);
     if (lang == ukr) {
         cout << "Введіть питання таке, щоб для " << newAnimal << " відповідь на нього була так, а для " << node->text << " - ні" << endl;
     } else {
         cout << "Enter the question in such a way that for " << newAnimal << " the answer to it is yes, and for " << node->text << " it is no" << endl;
     }
+    std::cin.clear();
     string question = userInput::inputQuestion();
     treeNode *yes = new treeNode();
     yes->text = newAnimal;
@@ -253,7 +264,7 @@ void Game::menu() {
     cout << ((lang == ukr) ? "Введіть номер з меню: " : "Enter the number from the menu: ");
     int choice;
     cin >> choice;
-    cin.ignore();
+    cin.clear();
     thinkingGame tgame(lang);
     switch (choice) {
         case 1:
@@ -284,7 +295,7 @@ void Game::menu() {
 void thinkingGame::play() {
     files.readFromFile(treeRoot);
     if (lang == ukr) {
-        cout << "Загадайте тварину, я спробую її вгадати. Натисніть enter , щоб розпочати";
+        cout << "Загадайте тварину, я спробую її вгадати. Натисніть enter, щоб розпочати";
     } else {
         cout << "Think of animal, I try to guess it for you! Tap enter to start";
     }

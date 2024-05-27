@@ -336,10 +336,3 @@ void thinkingGame::play() {
     files.writeToFile(treeRoot);
 }
 
-int main() {
-    Game game;
-    while(true) {
-        game.menu();
-    }
-    return 0;
-}

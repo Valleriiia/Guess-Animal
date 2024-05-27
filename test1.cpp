@@ -14,6 +14,7 @@ struct treeNode {
 };
 
 class fileManager {
+private:
     string filename;
     fstream file;
     void read(treeNode* &root);
@@ -57,7 +58,6 @@ void fileManager::readFromFile(treeNode* &root) {
 }
 
 void fileManager::read(treeNode* &root) {
-    
     string input;
     getline(file, input);
     if (input[0] == '#') {
@@ -82,7 +82,6 @@ void fileManager::writeToFile(treeNode *root) {
 }
 
 void fileManager::write(treeNode *root) {
-    
     if (root == NULL) {
         file << "#" << endl;
         return;
@@ -132,6 +131,7 @@ public:
     static bool getEngAnswer();
     static string inputAnimal(Language lang);
     static string inputQuestion();
+private: 
     static void removeNonAlphabetic(string &str);
 };
 
@@ -197,7 +197,7 @@ string userInput::inputQuestion() {
     wstring wquestion = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(question);
     wquestion[0] = towupper(wquestion[0]);
     question = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(wquestion);
-        question = question + "?";
+    question = question + "?";
     return question;
 }
 
@@ -215,6 +215,7 @@ void userInput::removeNonAlphabetic(string &str) {
 }
 
 class thinkingGame : public Game {
+private:
     treeNode* treeRoot;
 public:
     thinkingGame(Language l) {

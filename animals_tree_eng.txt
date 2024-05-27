@@ -1,0 +1,35 @@
+Does your animal have 4 legs?
+Does your animal say meow?
+Is it big?
+Does it have stripes?
+a Tiger
+#
+#
+a Lion
+#
+#
+a Cat
+#
+#
+Does it live in a forest?
+Does it hibernate in winter?
+a Bear
+#
+#
+a Wolf
+#
+#
+a Dog
+#
+#
+Your animal can flight?
+a Bird
+#
+#
+Your animal can swim?
+a Fish
+#
+#
+a Straus
+#
+#

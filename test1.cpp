@@ -6,10 +6,96 @@
 using namespace std;
 
 enum Language {ukr, eng};
+typedef struct treeNode treeNode;
+
+struct treeNode {
+    string text;
+    treeNode *yes, *no;
+};
+
+class fileManager {
+    string filename;
+    fstream file;
+    void read(treeNode* &root);
+    void write(treeNode* root);
+public:
+    fileManager() {}
+    fileManager(string name) {filename = name;}
+    void setFilename(string name);
+    void readAndPrintText();
+    void readFromFile(treeNode* &root);
+    void writeToFile(treeNode *root);
+};
+
+void fileManager::setFilename(string name) {
+    filename = name;
+}
+
+void fileManager::readAndPrintText() {
+    file.open(filename, ios::in);
+    if (!file.is_open()) {
+        cout << "File not found" << endl;
+        exit(1);
+    }
+    string text;
+    while (!file.eof()) {
+        getline(file, text);
+        cout << text << endl;
+    }    
+    cout << endl;
+    file.close();
+}
+
+void fileManager::readFromFile(treeNode* &root) {
+    file.open(filename, ios::in);
+    if (!file.is_open()) {
+        cout << "File not found" << endl;
+        exit(1);
+    }
+    read(root);
+    file.close();
+}
+
+void fileManager::read(treeNode* &root) {
+    
+    string input;
+    getline(file, input);
+    if (input[0] == '#') {
+        root = NULL;
+        return;
+    }
+    root = new treeNode();
+    root->text = input;
+    input.clear();
+    read(root->yes);
+    read(root->no);
+}
+
+void fileManager::writeToFile(treeNode *root) {
+    file.open(filename, ios::out | ios::trunc);
+    if (!file.is_open()) {
+        cout << "File not found" << endl;
+        exit(1);
+    }
+    write(root);
+    file.close();
+}
+
+void fileManager::write(treeNode *root) {
+    
+    if (root == NULL) {
+        file << "#" << endl;
+        return;
+    }
+    file <<  root->text << endl;
+    write(root->yes);
+    write(root->no);
+}
 
 class Game {
 protected:
     enum Language lang;
+    fileManager files;
 public:
     Game() {lang = ukr;}
     void setLanguage();
@@ -38,71 +124,7 @@ void Game::setLanguage() {
     }
 }
 
-typedef struct treeNode treeNode;
-struct treeNode {
-    string text;
-    treeNode *yes, *no;
-};
 
-class fileMeneger {
-    string filename;
-    fstream file;
-    void read(treeNode* &root);
-    void write(treeNode* root);
-public:
-    fileMeneger() {};
-    fileMeneger(string name) {
-        filename = name;
-    }
-    void readFromFile(treeNode* &root);
-    void writeToFile(treeNode *root);
-};
-
-void fileMeneger::readFromFile(treeNode* &root) {
-    file.open(filename, ios::in);
-    if (!file.is_open()) {
-        cout << "File not found" << endl;
-        exit(1);
-    }
-    read(root);
-    file.close();
-}
-
-void fileMeneger::read(treeNode* &root) {
-    
-    string input;
-    getline(file, input);
-    if (input[0] == '#') {
-        root = NULL;
-        return;
-    }
-    root = new treeNode();
-    root->text = input;
-    input.clear();
-    read(root->yes);
-    read(root->no);
-}
-
-void fileMeneger::writeToFile(treeNode *root) {
-    file.open(filename, ios::out | ios::trunc);
-    if (!file.is_open()) {
-        cout << "File not found" << endl;
-        exit(1);
-    }
-    write(root);
-    file.close();
-}
-
-void fileMeneger::write(treeNode *root) {
-    
-    if (root == NULL) {
-        file << "#" << endl;
-        return;
-    }
-    file <<  root->text << endl;
-    write(root->yes);
-    write(root->no);
-}
 
 class userInput {
 public:
@@ -144,6 +166,10 @@ string userInput::inputAnimal(Language lang) {
     cin.ignore();
     getline(cin, newAnimal);
     removeNonAlphabetic(newAnimal);
+    if (newAnimal.length() <= 2) {
+        cout << ((lang == ukr) ? "Помилка введення! Спробуйте ще раз" : "Invalid input! Try again") << endl;
+        newAnimal = inputAnimal(lang);
+    }
     if (lang == eng) {
         if (!(newAnimal.substr(0, 2) == "a " || newAnimal.substr(0, 3) == "an ")) {
             char first = newAnimal[0];
@@ -190,13 +216,12 @@ void userInput::removeNonAlphabetic(string &str) {
 
 class thinkingGame : public Game {
     treeNode* treeRoot;
-    fileMeneger files;
 public:
     thinkingGame(Language l) {
         lang = l;
         treeRoot = NULL;
         string filename = (lang == ukr) ? "animals_tree_ukr.txt" :  "animals_tree_eng.txt";
-        files = fileMeneger(filename);
+        files = fileManager(filename);
     }
     void play();
     void question(treeNode *root);
@@ -213,6 +238,11 @@ void thinkingGame::addQuestion(treeNode* &node) {
     }
     std::cin.clear();
     string question = userInput::inputQuestion();
+    size_t minLength = (lang == ukr) ? 16 : 10;
+    while (question.length() < minLength) {
+       cout << ((lang == ukr) ? "Питання занадто коротке. Спробуйте ще раз." : "The question is too short. Try again.") << endl;
+       question = userInput::inputQuestion();
+    }
     treeNode *yes = new treeNode();
     yes->text = newAnimal;
     treeNode *no = new treeNode();
@@ -264,7 +294,7 @@ void Game::menu() {
     cout << ((lang == ukr) ? "Введіть номер з меню: " : "Enter the number from the menu: ");
     int choice;
     cin >> choice;
-    cin.clear();
+    cin.ignore();
     thinkingGame tgame(lang);
     switch (choice) {
         case 1:
@@ -280,7 +310,8 @@ void Game::menu() {
             break;
 
         case 4:
-
+            files.setFilename((lang == ukr) ? "rules_ukr.txt" : "rules_eng.txt");
+            files.readAndPrintText();
             break;
         
         case 5:

@@ -340,3 +340,7 @@ void thinkingGame::play() {
     files.writeToFile(treeRoot);
 }
 
+
+int main() {
+    
+}

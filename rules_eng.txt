@@ -2,12 +2,15 @@ Rules of game "Animals"
 
 Thinking mode:
 
-Загадуєте  тварину та  натискаєте enter.  Відповідаєте на  питання гри 'так' або
-'ні' чи 'т' або 'н'. Якщо гра не відгадала тварину, вписуєте загадану тварину та
-питання,  яке відрізняє  вашу тварину  від тварини запропонованої  грою. Питання
-повинно  бути таке,  щоб для  вашої тварини  відповідь на нього була так,  а для
-тварини, що запропонувала гра, - ні.
+Think of an animal and  press enter.  Answer the game's  questions with 'yes' or
+'no' or 'y' or 'n'. If the game doesn't guess your animal,  enter the animal you
+were thinking  of and a  question that  distinguishes your  animal from  the one
+suggested by  the game.  The question  should be  such that  the answer for your
+animal is 'yes,' and for the animal suggested by the game, it is 'no.'
 
 Guessing mode:
 
-Гра загадає тварину, яку ви повинні будете вгадати...
+The game thinks of a certain animal  that you have to guess  by asking questions
+about  its  characteristics or  making  guesses  about  its  name.  You can  ask
+questions that  the game will  answer with 'yes' or  'no,' or make guesses about
+the animal. The game ends when you guess the animal or decide to quit.

@@ -11,6 +11,6 @@ animal is 'yes,' and for the animal suggested by the game, it is 'no.'
 Guessing mode:
 
 The game thinks of a certain animal  that you have to guess  by asking questions
-about  its  characteristics or  making  guesses  about  its  name.  You can  ask
-questions that  the game will  answer with 'yes' or  'no,' or make guesses about
-the animal. The game ends when you guess the animal or decide to quit.
+about  its features or making  guesses  about its  name.  You can  ask questions
+that  the game will answer with 'yes' or 'no,' or make guesses about the animal.
+The game ends when you guess right the animal or decide to quit.

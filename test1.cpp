@@ -8,10 +8,6 @@ using namespace std;
 enum Language {ukr, eng};
 typedef struct treeNode treeNode;
 
-int main() {
-    
-}
-
 struct treeNode {
     string text;
     treeNode *yes, *no;
@@ -342,5 +338,9 @@ void thinkingGame::play() {
 
 
 int main() {
-    
+    Game game;
+    while(true) {
+        game.menu();
+    }
+    return 0;
 }

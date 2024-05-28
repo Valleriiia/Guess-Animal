@@ -13,6 +13,10 @@ a Cat
 #
 Does it live in a forest?
 Does it hibernate in winter?
+Does it have prickle?
+a Headgehog
+#
+#
 a Bear
 #
 #

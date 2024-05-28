@@ -1,0 +1,16 @@
+Rules of game "Animals"
+
+Thinking mode:
+
+Think of an animal and  press enter.  Answer the game's  questions with 'yes' or
+'no' or 'y' or 'n'. If the game doesn't guess your animal,  enter the animal you
+were thinking  of and a  question that  distinguishes your  animal from  the one
+suggested by  the game.  The question  should be  such that  the answer for your
+animal is 'yes,' and for the animal suggested by the game, it is 'no.'
+
+Guessing mode:
+
+The game thinks of a certain animal  that you have to guess  by asking questions
+about  its features or making  guesses  about its  name.  You can  ask questions
+that  the game will answer with 'yes' or 'no,' or make guesses about the animal.
+The game ends when you guess right the animal or decide to quit.

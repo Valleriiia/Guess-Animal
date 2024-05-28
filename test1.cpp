@@ -133,6 +133,7 @@ public:
     static string inputQuestion();
 private: 
     static void removeNonAlphabetic(string &str);
+    static void stringToLower(string &str);
 };
 
 bool userInput::getEngAnswer() {
@@ -166,6 +167,7 @@ string userInput::inputAnimal(Language lang) {
     cin.ignore();
     getline(cin, newAnimal);
     removeNonAlphabetic(newAnimal);
+    stringToLower(newAnimal);
     if (newAnimal.length() <= 2) {
         cout << ((lang == ukr) ? "Помилка введення! Спробуйте ще раз" : "Invalid input! Try again") << endl;
         newAnimal = inputAnimal(lang);
@@ -194,6 +196,7 @@ string userInput::inputQuestion() {
     string question;
     getline(cin, question);
     removeNonAlphabetic(question);
+    stringToLower(question);
     wstring wquestion = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(question);
     wquestion[0] = towupper(wquestion[0]);
     question = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(wquestion);
@@ -211,6 +214,12 @@ void userInput::removeNonAlphabetic(string &str) {
             i--;
         }
     }
+    str = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(wstr);
+}
+
+void userInput::stringToLower(string &str) {
+    wstring wstr = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(str);
+    transform(wstr.begin(), wstr.end(), wstr.begin(), towlower);
     str = wstring_convert<codecvt_utf8<wchar_t>>().to_bytes(wstr);
 }
 

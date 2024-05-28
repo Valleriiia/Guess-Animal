@@ -241,12 +241,12 @@ public:
 void thinkingGame::addQuestion(treeNode* &node) {
     cout << ((lang == ukr) ? "Яку тварину ви загадали?" : "What's your animal?") << endl;
     string newAnimal = userInput::inputAnimal(lang);
+    cin.clear();
     if (lang == ukr) {
         cout << "Введіть питання таке, щоб для " << newAnimal << " відповідь на нього була так, а для " << node->text << " - ні" << endl;
     } else {
-        cout << "Enter the question in such a way that for " << newAnimal << " the answer to it is yes, and for " << node->text << " it is no" << endl;
+        cout << "Enter a question such that the answer to it for " << newAnimal << " is yes, and for " << node->text << " - no" << endl;
     }
-    std::cin.clear();
     string question = userInput::inputQuestion();
     size_t minLength = (lang == ukr) ? 16 : 10;
     while (question.length() < minLength) {

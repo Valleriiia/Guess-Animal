@@ -324,7 +324,7 @@ void Game::menu() {
     cin >> choice;
     if (cin.fail()) {
         cin.clear();
-        cin.ignore();
+        cin.ignore(32767, '\n');
         cout << ((lang == ukr) ? "Помилка введення! Спробуйте ще раз" : "Invalid input! Try again") << endl;
         return;
     }
@@ -452,209 +452,214 @@ public:
 };
 
 void GuessingGame::play() {
-        srand(time(nullptr));
-        auto iter = animals.begin();
-        advance(iter, rand() % animals.size());
-        const string& animal = iter->first;
+    srand(time(nullptr));
+    auto iter = animals.begin();
+    advance(iter, rand() % animals.size());
+    const string& animal = iter->first;
+    if (lang == ukr) {
+        cout << "\nКомп'ютер загадав тварину. Спробуйте вгадати, яку саме." << endl;
+    } else {
+        cout << "\nThe computer guessed the animal. Try to guess which animal the computer chose." << endl;
+    }
 
+    int input;
+    while (true) {
         if (lang == ukr) {
-            cout << "\nКомп'ютер загадав тварину. Спробуйте вгадати, яку саме." << endl;
+            cout << "\nЩо ви хочете зробити? (1 - задати запитання, 2 - зробити припущення, 3 - завершити гру): ";
         } else {
-            cout << "\nThe computer guessed the animal. Try to guess which animal the computer chose." << endl;
+            cout << "\nWhat do you want to do? (1 - ask a question, 2 - make a guess, 3 - end the game): ";
         }
-
-        string input;
-        while (true) {
-            if (lang == ukr) {
-                cout << "\nЩо ви хочете зробити? (1 - задати запитання, 2 - зробити припущення, 3 - завершити гру): ";
-            } else {
-                cout << "\nWhat do you want to do? (1 - ask a question, 2 - make a guess, 3 - end the game): ";
+        cin >> input;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(32767, '\n');
+            cout << ((lang == ukr) ? "Помилка введення! Спробуйте ще раз" : "Invalid input! Try again") << endl;
+            continue;
+        }
+        cin.ignore();
+        switch (input) {
+            case 1: {
+                QuestionAsker asker;
+                asker.ask(animal, animals, keywords, lang);
+                break;
             }
-            getline(cin, input);
-
-            switch (stoi(input)) {
-                case 1: {
-                    QuestionAsker asker;
-                    asker.ask(animal, animals, keywords, lang);
-                    break;
+            case 2: {
+                Guesser guesser;
+                bool correct = guesser.guess(animal, lang);
+                if (correct) {
+                    return; 
                 }
-                case 2: {
-                    Guesser guesser;
-                    bool correct = guesser.guess(animal, lang);
-                    if (correct) {
-                        return; 
-                    }
-                    break;
+                break;
+            }
+            case 3: {
+                if (lang == ukr) {
+                    cout << "\nГра завершена. Чекаємо на вас знову!" << endl;
+                } else {
+                    cout << "\nThe game is over. We are waiting for you again!" << endl;
                 }
-                case 3: {
-                    if (lang == ukr) {
-                        cout << "\nГра завершена. Чекаємо на вас знову!" << endl;
-                    } else {
-                        cout << "\nThe game is over. We are waiting for you again!" << endl;
-                    }
-                    return;
-                }
-                default: {
-                    if (lang == ukr) {
-                        cout << "\nНекоректний вибір. Оберіть 1 для запитання, 2 для припущення, або 3 для завершення гри." << endl;
-                    } else {
-                        cout << "\nInvalid choice. Choose 1 for asking, 2 for guessing, or 3 to end the game." << endl;
-                    }
+                return;
+            }
+            default: {
+                if (lang == ukr) {
+                    cout << "\nНекоректний вибір. Оберіть 1 для запитання, 2 для припущення, або 3 для завершення гри." << endl;
+                } else {
+                    cout << "\nInvalid choice. Choose 1 for asking, 2 for guessing, or 3 to end the game." << endl;
                 }
             }
         }
     }
+}
 
 void GuessingGame::initAnimals() {
-        if (lang == ukr) {
-            animals = {
-                {"Тигр", {"хижак", "смугастий", "велика", "гострі зуби", "кігті", "швидка", "ссавець"}},
-                {"Лев", {"хижак", "грива", "велика", "кігті", "гострі зуби", "швидка", "стадна"}},
-                {"Лисиця", {"хижак", "хитра", "рижа", "невелика", "швидка", "ссавець", "розумний", "гострі зуби"}},
-                {"Корова", {"травоїдна", "домашня", "має роги", "молоко", "велика", "ссавець", "пасеться", "довгі роги"}},
-                {"Жираф", {"травоїдна", "довга шия", "високий", "плямиста шкіра", "довгі ноги", "має роги"}},
-                {"Верблюд", {"ссавець", "травоїдний", "великий", "довга шия", "горби", "пустельний"}},
-                {"Краб", {"водний", "ракоподібний", "панцир", "хижак", "клешні", "морський"}},
-                {"Каракатиця", {"хижак", "водний", "щупальця", "м'яке тіло", "випускає чорнило", "змінює колір"}},
-                {"Кальмар", {"хижак", "водний", "швидкий", "м'яке тіло", "щупальця", "випускає чорнило", "безхребетний", "велика", "змінює колір"}},
-                {"Орел", {"хижак", "літає", "гострий зір", "велика", "кігті", "швидка", "перната"}},
-                {"Ластівка", {"всеїдна", "літає", "швидка", "невелика", "перната", "гніздиться", "мігрує"}},
-                {"Папуга", {"травоїдна", "літає", "яскраве пір'я", "розмовляє", "невелика", "перната", "розумний"}},
-                {"Кіт", {"ссавець", "домашня", "вуса", "нічний зір", "м'яке хутро", "кігті", "соціальна", "нявкає"}},
-                {"Собака", {"домашня", "нюх", "гавкає", "вірна", "соціальна", "ссавець", "м'яке хутро"}},
-                {"Кролик", {"травоїдна", "домашня", "довгі вуха", "швидка", "моркву", "м'яке хутро", "стрибає"}}
-            };
-        } else {
-            animals = {
-                {"Tiger", {"predator", "striped", "big", "sharp teeth", "claws", "fast", "mammal"}},
-                {"Lion", {"predator", "mane", "big", "claws", "sharp teeth", "fast", "social"}},
-                {"Fox", {"predator", "cunning", "red", "small", "fast", "mammal", "intelligent", "sharp teeth"}},
-                {"Cow", {"herbivore", "domestic", "has horns", "milk", "big", "mammal", "grazing", "long horns"}},
-                {"Giraffe", {"herbivore", "long neck", "tall", "spotted skin", "long legs", "has horns"}},
-                {"Camel", {"mammal", "herbivore", "big", "long neck", "humps", "desert"}},
-                {"Crab", {"aquatic", "crustacean", "shell", "predator", "claws", "marine"}},
-                {"Cuttlefish", {"predator", "aquatic", "tentacles", "soft body", "ink", "changes color"}},
-                {"Squid", {"predator", "aquatic", "fast", "soft body", "tentacles", "ink", "invertebrate", "big", "changes color"}},
-                {"Eagle", {"predator", "flies", "sharp vision", "big", "claws", "fast", "feathered"}},
-                {"Swallow", {"omnivore", "flies", "fast", "small", "feathered", "nests", "migrates"}},
-                {"Parrot", {"herbivore", "flies", "bright feathers", "talks", "small", "feathered", "intelligent"}},
-                {"Cat", {"mammal", "domestic", "whiskers", "night vision", "soft fur", "claws", "social", "meows"}},
-                {"Dog", {"domestic", "sense of smell", "barks", "loyal", "social", "mammal", "soft fur"}},
-                {"Rabbit", {"herbivore", "domestic", "long ears", "fast", "carrots", "soft fur", "hops"}}
-            };
-        }
+    if (lang == ukr) {
+        animals = {
+            {"Тигр", {"хижак", "смугастий", "велика", "гострі зуби", "кігті", "швидка", "ссавець"}},
+            {"Лев", {"хижак", "грива", "велика", "кігті", "гострі зуби", "швидка", "стадна"}},
+            {"Лисиця", {"хижак", "хитра", "рижа", "невелика", "швидка", "ссавець", "розумний", "гострі зуби"}},
+            {"Корова", {"травоїдна", "домашня", "має роги", "молоко", "велика", "ссавець", "пасеться", "довгі роги"}},
+            {"Жираф", {"травоїдна", "довга шия", "високий", "плямиста шкіра", "довгі ноги", "має роги"}},
+            {"Верблюд", {"ссавець", "травоїдний", "великий", "довга шия", "горби", "пустельний"}},
+            {"Краб", {"водний", "ракоподібний", "панцир", "хижак", "клешні", "морський"}},
+            {"Каракатиця", {"хижак", "водний", "щупальця", "м'яке тіло", "випускає чорнило", "змінює колір"}},
+            {"Кальмар", {"хижак", "водний", "швидкий", "м'яке тіло", "щупальця", "випускає чорнило", "безхребетний", "велика", "змінює колір"}},
+            {"Орел", {"хижак", "літає", "гострий зір", "велика", "кігті", "швидка", "перната"}},
+            {"Ластівка", {"всеїдна", "літає", "швидка", "невелика", "перната", "гніздиться", "мігрує"}},
+            {"Папуга", {"травоїдна", "літає", "яскраве пір'я", "розмовляє", "невелика", "перната", "розумний"}},
+            {"Кіт", {"ссавець", "домашня", "вуса", "нічний зір", "м'яке хутро", "кігті", "соціальна", "нявкає"}},
+            {"Собака", {"домашня", "нюх", "гавкає", "вірна", "соціальна", "ссавець", "м'яке хутро"}},
+            {"Кролик", {"травоїдна", "домашня", "довгі вуха", "швидка", "моркву", "м'яке хутро", "стрибає"}}
+        };
+    } else {
+        animals = {
+            {"Tiger", {"predator", "striped", "big", "sharp teeth", "claws", "fast", "mammal"}},
+            {"Lion", {"predator", "mane", "big", "claws", "sharp teeth", "fast", "social"}},
+            {"Fox", {"predator", "cunning", "red", "small", "fast", "mammal", "intelligent", "sharp teeth"}},
+            {"Cow", {"herbivore", "domestic", "has horns", "milk", "big", "mammal", "grazing", "long horns"}},
+            {"Giraffe", {"herbivore", "long neck", "tall", "spotted skin", "long legs", "has horns"}},
+            {"Camel", {"mammal", "herbivore", "big", "long neck", "humps", "desert"}},
+            {"Crab", {"aquatic", "crustacean", "shell", "predator", "claws", "marine"}},
+            {"Cuttlefish", {"predator", "aquatic", "tentacles", "soft body", "ink", "changes color"}},
+            {"Squid", {"predator", "aquatic", "fast", "soft body", "tentacles", "ink", "invertebrate", "big", "changes color"}},
+            {"Eagle", {"predator", "flies", "sharp vision", "big", "claws", "fast", "feathered"}},
+            {"Swallow", {"omnivore", "flies", "fast", "small", "feathered", "nests", "migrates"}},
+            {"Parrot", {"herbivore", "flies", "bright feathers", "talks", "small", "feathered", "intelligent"}},
+            {"Cat", {"mammal", "domestic", "whiskers", "night vision", "soft fur", "claws", "social", "meows"}},
+            {"Dog", {"domestic", "sense of smell", "barks", "loyal", "social", "mammal", "soft fur"}},
+            {"Rabbit", {"herbivore", "domestic", "long ears", "fast", "carrots", "soft fur", "hops"}}
+        };
     }
+}
 
 void GuessingGame::initKeywords() {
-        if (lang == ukr) {
-            keywords = {
-                {"хижак", {"хижак", "Хижак", "хижий", "Хижий", "хижа", "Хижа"}},
-                {"травоїдна", {"травоїдна", "Травоїдна", "травоїдний", "Травоїдний"}},
-                {"всеїдна", {"всеїдна", "Всеїдна", "всеїдний", "Всеїдний"}},
-                {"літає", {"літає", "Літає", "літаючий", "Літаючий", "літаюча", "Літаюча", "вміє літати", "Вміє літати", "може літати", "Може літати"}}, 
-                {"водний", {"водний", "Водний",  "водна", "Водна", "живе у воді", "Живе у воді" }},
-                {"домашня", {"домашня", "Домашня", "домашній", "Домашній", "свійська", "Свійська"}},
-                {"смугастий", {"смугастий", "Смугастий", "смугаста", "Смугаста",  "зі смугами", "Зі смугами", "в смужках", "В смужках"}},
-                {"велика", {"велика", "Велика", "великий", "Великий"}},
-                {"гострі зуби", {"гострі зуби", "Гострі зуби", "гострі ікла", "Гострі ікла"}},
-                {"кігті", {"кігті", "Кігті","кігтями", "Кігтями"}},
-                {"швидка", {"швидка", "Швидка", "швидкий", "Швидкий", "швидко", "Швидко"}},
-                {"ссавець", {"ссавець", "Ссавець", "ссавці", "Ссавці"}},
-                {"грива", {"грива", "Грива", "гриву", "Гриву", "гриви", "Гриви", "з гривою", "З гривою"}},
-                {"стадна", {"стадна", "Стадна", "стадний", "Стадний", "в стаді", "В стаді", "стадом", "Стадом"}},
-                {"хитра", {"хитра", "Хитра", "хитрий", "Хитрий"}},
-                {"рижа", {"рижа", "Рижа", "рижий", "Рижий", "рудий", "Рудий", "руда", "Руда"}},
-                {"невелика", {"невелика", "Невелика", "невеликий", "Невеликий", "маленька", "Маленька", "малий", "Малий"}},
-                {"розумний", {"розумний", "Розумний", "розумна", "Розумна"}},
-                {"має роги", {"має роги", "Має роги", "з рогами", "З рогами", "рогатий", "Рогатий", "рогата", "Рогата"}},
-                {"молоко", {"молоко", "Молоко"}},
-                {"пасеться", {"пасеться", "Пасеться", "пасти", "Пасти"}},
-                {"довга шия", {"довга шия", "Довга шия", "довгу шию", "Довгу шию"}},
-                {"високий", {"високий", "Високий", "висока", "Висока"}},
-                {"плямиста шкіра", {"плямиста шкіра", "Плямиста шкіра", "плямистий", "Плямистий", "плямиста", "Плямиста"}},
-                {"довгі ноги", {"довгі ноги", "Довгі ноги", "довгонога", "Довгонога"}},
-                {"пустельний", {"пустельний", "Пустельний", "пустельна", "Пустельна", "живе в пустелі", "Живе в пустелі"}},
-                {"ракоподібний", {"ракоподібний", "Ракоподібний", "ракоподібна", "Ракоподібна"}},
-                {"панцир", {"панцир", "Панцир", "панцирний", "Панцирний", "панцирна", "Панцирна"}},
-                {"клешні", {"клешні", "Клешні", "клешня", "Клешня", "клешню", "Клешню"}},
-                {"щупальця", {"щупальця", "Щупальця", "щупалець", "Щупалець", "щупальці", "Щупальці"}},
-                {"м'яке тіло", {"м'яке тіло", "М'яке тіло"}},
-                {"випускає чорнило", {"випускає чорнило", "Випускає чорнило", "чорнило", "Чорнило"}},
-                {"змінює колір", {"змінює колір", "Змінює колір", "змінювати колір", "Змінювати колір", "колір"}},
-                {"безхребетний", {"безхребетний", "Безхребетний", "безхребетна", "Безхребетна"}},
-                {"гострий зір", {"гострий зір", "Гострий зір", "зір"}},
-                {"перната", {"перната", "Перната", "пернатий", "Пернатий", "з пір'ям", "З пір'ям"}},
-                {"гніздиться", {"гніздиться", "Гніздиться", "гніздиться в", "Гніздиться в", "гніздо", "Гніздо"}},
-                {"мігрує", {"мігрує", "Мігрує", "мігрують", "Мігрують", "мігруючий", "Мігруючий"}},
-                {"яскраве пір'я", {"яскраве пір'я", "Яскраве пір'я"}},
-                {"розмовляє", {"розмовляє", "Розмовляє", "говорить", "Говорить", "розмовляти", "Розмовляти"}},
-                {"вуса", {"вуса", "Вуса", "вусики", "Вусики", "з вусами", "З вусами"}},
-                {"нічний зір", {"нічний зір", "Нічний зір", "бачить вночі", "Бачить вночі"}},
-                {"м'яке хутро", {"м'яке хутро", "М'яке хутро"}},
-                {"соціальна", {"соціальна", "Соціальна", "соціальний", "Соціальний"}},
-                {"нявкає", {"нявкає", "Нявкає", "мяукає", "Мяукає", "мяу", "Мяу"}},
-                {"нюх", {"нюх", "Нюх", "запах", "Запах", "чутливий до запахів", "Чутливий до запахів"}},
-                {"гавкає", {"гавкає", "Гавкає", "гав", "Гав", "гавкати", "Гавкати"}},
-                {"вірна", {"вірна", "Вірна", "вірний", "Вірний"}},
-                {"моркву", {"моркву", "Моркву", "морква", "Морква"}},
-                {"довгі вуха", {"довгі вуха", "Довгі вуха", "вуха"}},
-                {"стрибає", {"стрибає", "Стрибає", "стрибати", "Стрибати"}}
+    if (lang == ukr) {
+        keywords = {
+            {"хижак", {"хижак", "Хижак", "хижий", "Хижий", "хижа", "Хижа"}},
+            {"травоїдна", {"травоїдна", "Травоїдна", "травоїдний", "Травоїдний"}},
+            {"всеїдна", {"всеїдна", "Всеїдна", "всеїдний", "Всеїдний"}},
+            {"літає", {"літає", "Літає", "літаючий", "Літаючий", "літаюча", "Літаюча", "вміє літати", "Вміє літати", "може літати", "Може літати"}}, 
+            {"водний", {"водний", "Водний",  "водна", "Водна", "живе у воді", "Живе у воді" }},
+            {"домашня", {"домашня", "Домашня", "домашній", "Домашній", "свійська", "Свійська"}},
+            {"смугастий", {"смугастий", "Смугастий", "смугаста", "Смугаста",  "зі смугами", "Зі смугами", "в смужках", "В смужках"}},
+            {"велика", {"велика", "Велика", "великий", "Великий"}},
+            {"гострі зуби", {"гострі зуби", "Гострі зуби", "гострі ікла", "Гострі ікла"}},
+            {"кігті", {"кігті", "Кігті","кігтями", "Кігтями"}},
+            {"швидка", {"швидка", "Швидка", "швидкий", "Швидкий", "швидко", "Швидко"}},
+            {"ссавець", {"ссавець", "Ссавець", "ссавці", "Ссавці"}},
+            {"грива", {"грива", "Грива", "гриву", "Гриву", "гриви", "Гриви", "з гривою", "З гривою"}},
+            {"стадна", {"стадна", "Стадна", "стадний", "Стадний", "в стаді", "В стаді", "стадом", "Стадом"}},
+            {"хитра", {"хитра", "Хитра", "хитрий", "Хитрий"}},
+            {"рижа", {"рижа", "Рижа", "рижий", "Рижий", "рудий", "Рудий", "руда", "Руда"}},
+            {"невелика", {"невелика", "Невелика", "невеликий", "Невеликий", "маленька", "Маленька", "малий", "Малий"}},
+            {"розумний", {"розумний", "Розумний", "розумна", "Розумна"}},
+            {"має роги", {"має роги", "Має роги", "з рогами", "З рогами", "рогатий", "Рогатий", "рогата", "Рогата"}},
+            {"молоко", {"молоко", "Молоко"}},
+            {"пасеться", {"пасеться", "Пасеться", "пасти", "Пасти"}},
+            {"довга шия", {"довга шия", "Довга шия", "довгу шию", "Довгу шию"}},
+            {"високий", {"високий", "Високий", "висока", "Висока"}},
+            {"плямиста шкіра", {"плямиста шкіра", "Плямиста шкіра", "плямистий", "Плямистий", "плямиста", "Плямиста"}},
+            {"довгі ноги", {"довгі ноги", "Довгі ноги", "довгонога", "Довгонога"}},
+            {"пустельний", {"пустельний", "Пустельний", "пустельна", "Пустельна", "живе в пустелі", "Живе в пустелі"}},
+            {"ракоподібний", {"ракоподібний", "Ракоподібний", "ракоподібна", "Ракоподібна"}},
+            {"панцир", {"панцир", "Панцир", "панцирний", "Панцирний", "панцирна", "Панцирна"}},
+            {"клешні", {"клешні", "Клешні", "клешня", "Клешня", "клешню", "Клешню"}},
+            {"щупальця", {"щупальця", "Щупальця", "щупалець", "Щупалець", "щупальці", "Щупальці"}},
+            {"м'яке тіло", {"м'яке тіло", "М'яке тіло"}},
+            {"випускає чорнило", {"випускає чорнило", "Випускає чорнило", "чорнило", "Чорнило"}},
+            {"змінює колір", {"змінює колір", "Змінює колір", "змінювати колір", "Змінювати колір", "колір"}},
+            {"безхребетний", {"безхребетний", "Безхребетний", "безхребетна", "Безхребетна"}},
+            {"гострий зір", {"гострий зір", "Гострий зір", "зір"}},
+            {"перната", {"перната", "Перната", "пернатий", "Пернатий", "з пір'ям", "З пір'ям"}},
+            {"гніздиться", {"гніздиться", "Гніздиться", "гніздиться в", "Гніздиться в", "гніздо", "Гніздо"}},
+            {"мігрує", {"мігрує", "Мігрує", "мігрують", "Мігрують", "мігруючий", "Мігруючий"}},
+            {"яскраве пір'я", {"яскраве пір'я", "Яскраве пір'я"}},
+            {"розмовляє", {"розмовляє", "Розмовляє", "говорить", "Говорить", "розмовляти", "Розмовляти"}},
+            {"вуса", {"вуса", "Вуса", "вусики", "Вусики", "з вусами", "З вусами"}},
+            {"нічний зір", {"нічний зір", "Нічний зір", "бачить вночі", "Бачить вночі"}},
+            {"м'яке хутро", {"м'яке хутро", "М'яке хутро"}},
+            {"соціальна", {"соціальна", "Соціальна", "соціальний", "Соціальний"}},
+            {"нявкає", {"нявкає", "Нявкає", "мяукає", "Мяукає", "мяу", "Мяу"}},
+            {"нюх", {"нюх", "Нюх", "запах", "Запах", "чутливий до запахів", "Чутливий до запахів"}},
+            {"гавкає", {"гавкає", "Гавкає", "гав", "Гав", "гавкати", "Гавкати"}},
+            {"вірна", {"вірна", "Вірна", "вірний", "Вірний"}},
+            {"моркву", {"моркву", "Моркву", "морква", "Морква"}},
+            {"довгі вуха", {"довгі вуха", "Довгі вуха", "вуха"}},
+            {"стрибає", {"стрибає", "Стрибає", "стрибати", "Стрибати"}}
+        };
+    } else {
+        keywords = {
+            {"predator", {"predator", "Predator", "predatory", "Predatory"}},
+            {"herbivore", {"herbivore", "Herbivore", "herbivorous", "Herbivorous"}},
+            {"omnivore", {"omnivore", "Omnivore", "omnivorous", "Omnivorous"}},
+            {"flies", {"flies", "Flies", "flying", "Flying", "can fly", "Can fly"}},
+            {"aquatic", {"aquatic", "Aquatic", "water-dwelling", "Water-dwelling"}},
+            {"domestic", {"domestic", "Domestic", "tame", "Tame"}},
+            {"striped", {"striped", "Striped", "stripes", "Stripes"}},
+            {"big", {"big", "Big", "large", "Large"}},
+            {"sharp teeth", {"sharp teeth", "Sharp teeth", "sharp fangs", "Sharp fangs"}},
+            {"claws", {"claws", "Claws"}},
+            {"fast", {"fast", "Fast", "quick", "Quick"}},
+            {"mammal", {"mammal", "Mammal", "mammals", "Mammals"}},
+            {"mane", {"mane", "Mane"}},
+            {"social", {"social", "Social"}},
+            {"cunning", {"cunning", "Cunning"}},
+            {"red", {"red", "Red"}},
+            {"small", {"small", "Small"}},
+            {"intelligent", {"intelligent", "Intelligent"}},
+            {"has horns", {"has horns", "Has horns", "horned", "Horned"}},
+            {"milk", {"milk", "Milk"}},
+            {"grazing", {"grazing", "Grazing"}},
+            {"long neck", {"long neck", "Long neck"}},
+            {"tall", {"tall", "Tall"}},
+            {"spotted skin", {"spotted skin", "Spotted skin"}},
+            {"long legs", {"long legs", "Long legs"}},
+            {"desert", {"desert", "Desert", "desert-dwelling", "Desert-dwelling"}},
+            {"crustacean", {"crustacean", "Crustacean"}},
+            {"shell", {"shell", "Shell"}},
+            {"claws", {"claws", "Claws"}},
+            {"tentacles", {"tentacles", "Tentacles"}},
+            {"soft body", {"soft body", "Soft body"}},
+            {"ink", {"ink", "Ink"}},
+            {"changes color", {"changes color", "Changes color"}},
+            {"invertebrate", {"invertebrate", "Invertebrate"}},
+            {"sharp vision", {"sharp vision", "Sharp vision"}},
+            {"feathered", {"feathered", "Feathered"}},
+            {"nests", {"nests", "Nests"}},
+            {"migrates", {"migrates", "Migrates"}},
+            {"bright feathers", {"bright feathers", "Bright feathers"}},
+            {"talks", {"talks", "Talks", "speaks", "Speaks"}},
+            {"whiskers", {"whiskers", "Whiskers"}},
+            {"night vision", {"night vision", "Night vision"}},
+            {"soft fur", {"soft fur", "Soft fur"}},
+            {"meows", {"meows", "Meows", "meowing", "Meowing"}},
+            {"sense of smell", {"sense of smell", "Sense of smell"}},
+            {"barks", {"barks", "Barks", "barking", "Barking"}},
+            {"loyal", {"loyal", "Loyal"}},
+            {"carrots", {"carrots", "Carrots"}},
+            {"long ears", {"long ears", "Long ears"}},
+            {"hops", {"hops", "Hops", "hopping", "Hopping"}}
             };
-        } else {
-            keywords = {
-                {"predator", {"predator", "Predator", "predatory", "Predatory"}},
-                {"herbivore", {"herbivore", "Herbivore", "herbivorous", "Herbivorous"}},
-                {"omnivore", {"omnivore", "Omnivore", "omnivorous", "Omnivorous"}},
-                {"flies", {"flies", "Flies", "flying", "Flying", "can fly", "Can fly"}},
-                {"aquatic", {"aquatic", "Aquatic", "water-dwelling", "Water-dwelling"}},
-                {"domestic", {"domestic", "Domestic", "tame", "Tame"}},
-                {"striped", {"striped", "Striped", "stripes", "Stripes"}},
-                {"big", {"big", "Big", "large", "Large"}},
-                {"sharp teeth", {"sharp teeth", "Sharp teeth", "sharp fangs", "Sharp fangs"}},
-                {"claws", {"claws", "Claws"}},
-                {"fast", {"fast", "Fast", "quick", "Quick"}},
-                {"mammal", {"mammal", "Mammal", "mammals", "Mammals"}},
-                {"mane", {"mane", "Mane"}},
-                {"social", {"social", "Social"}},
-                {"cunning", {"cunning", "Cunning"}},
-                {"red", {"red", "Red"}},
-                {"small", {"small", "Small"}},
-                {"intelligent", {"intelligent", "Intelligent"}},
-                {"has horns", {"has horns", "Has horns", "horned", "Horned"}},
-                {"milk", {"milk", "Milk"}},
-                {"grazing", {"grazing", "Grazing"}},
-                {"long neck", {"long neck", "Long neck"}},
-                {"tall", {"tall", "Tall"}},
-                {"spotted skin", {"spotted skin", "Spotted skin"}},
-                {"long legs", {"long legs", "Long legs"}},
-                {"desert", {"desert", "Desert", "desert-dwelling", "Desert-dwelling"}},
-                {"crustacean", {"crustacean", "Crustacean"}},
-                {"shell", {"shell", "Shell"}},
-                {"claws", {"claws", "Claws"}},
-                {"tentacles", {"tentacles", "Tentacles"}},
-                {"soft body", {"soft body", "Soft body"}},
-                {"ink", {"ink", "Ink"}},
-                {"changes color", {"changes color", "Changes color"}},
-                {"invertebrate", {"invertebrate", "Invertebrate"}},
-                {"sharp vision", {"sharp vision", "Sharp vision"}},
-                {"feathered", {"feathered", "Feathered"}},
-                {"nests", {"nests", "Nests"}},
-                {"migrates", {"migrates", "Migrates"}},
-                {"bright feathers", {"bright feathers", "Bright feathers"}},
-                {"talks", {"talks", "Talks", "speaks", "Speaks"}},
-                {"whiskers", {"whiskers", "Whiskers"}},
-                {"night vision", {"night vision", "Night vision"}},
-                {"soft fur", {"soft fur", "Soft fur"}},
-                {"meows", {"meows", "Meows", "meowing", "Meowing"}},
-                {"sense of smell", {"sense of smell", "Sense of smell"}},
-                {"barks", {"barks", "Barks", "barking", "Barking"}},
-                {"loyal", {"loyal", "Loyal"}},
-                {"carrots", {"carrots", "Carrots"}},
-                {"long ears", {"long ears", "Long ears"}},
-                {"hops", {"hops", "Hops", "hopping", "Hopping"}}
-                };
-        }
     }
+}
 
 int main() {
     Game game;

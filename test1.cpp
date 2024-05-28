@@ -294,14 +294,22 @@ void thinkingGame::question(treeNode *root) {
     }
 }
 
-void show(treeNode *root) {
-    if (root == NULL) {
-        return;
+class GuessingGame : public Game {
+private:
+    unordered_map<string, unordered_set<string>> animals;
+    unordered_map<string, unordered_set<string>> keywords;
+
+public:
+    GuessingGame(Language l) {
+        lang = l;
+        initAnimals();
+        initKeywords();
     }
-    cout << root->text << endl;
-    show(root->yes);
-    show(root->no);
-}
+    void play();
+private:
+    void initAnimals();
+    void initKeywords();
+};
 
 void Game::menu() {
     cout << ((lang == ukr) ? "\nГра \"Тварини\"" : "\nGame \"Animals\"") << endl << endl;
@@ -314,15 +322,22 @@ void Game::menu() {
     cout << ((lang == ukr) ? "Введіть номер з меню: " : "Enter the number from the menu: ");
     int choice;
     cin >> choice;
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore();
+        cout << ((lang == ukr) ? "Помилка введення! Спробуйте ще раз" : "Invalid input! Try again") << endl;
+        return;
+    }
     cin.ignore();
     thinkingGame tgame(lang);
+    GuessingGame ggame(lang);
     switch (choice) {
         case 1:
             tgame.play();
             break;
 
         case 2:
-
+            ggame.play();
             break;
 
         case 3:
@@ -339,7 +354,7 @@ void Game::menu() {
         
         default:
             cout << ((lang == ukr) ? "Неправельне введення! Спробуйте ще раз" : "Invalid input. Try again.") << endl;
-            menu();
+            return;
     }                                        
 }
 
@@ -358,9 +373,9 @@ void thinkingGame::play() {
 
 class QuestionAsker {
 public:
-    void ask(const string& animal, const unordered_map<string, unordered_set<string>>& animals, const unordered_map<string, unordered_set<string>>& keywords, int lang) {
+    void ask(const string& animal, const unordered_map<string, unordered_set<string>>& animals, const unordered_map<string, unordered_set<string>>& keywords, Language lang) {
         string question;
-        if (lang == 2) {
+        if (lang == ukr) {
             cout << "\nЗадайте своє запитання: ";
         } else {
             cout << "\nAsk your question: ";
@@ -371,13 +386,13 @@ public:
             for (const auto& _key : keys) {
                 if (strstr(question.c_str(), _key.c_str()) != nullptr) {
                     if (animals.at(animal).count(key) > 0) {
-                        if (lang == 2) {
+                        if (lang == ukr) {
                             cout << "\nТак." << endl;
                         } else {
                             cout << "\nYes." << endl;
                         }
                     } else {
-                        if (lang == 2) {
+                        if (lang == ukr) {
                             cout << "\nНі." << endl;
                         } else {
                             cout << "\nNo." << endl;
@@ -388,7 +403,7 @@ public:
             }
         }
 
-        if (lang == 2) {
+        if (lang == ukr) {
             cout << "\nНезрозуміле запитання. Спробуйте знову." << endl;
         } else {
             cout << "\nSorry, I don't understand the question. Please try again." << endl;
@@ -398,8 +413,8 @@ public:
 
 class Guesser {
 public:
-    bool guess(const string& animal, int lang) {
-        if (lang == 2) {
+    bool guess(const string& animal, Language lang) {
+        if (lang == ukr) {
             cout << "\nВаше припущення: ";
         } else {
             cout << "\nYour guess: ";
@@ -419,14 +434,14 @@ public:
         string animLow = converter.to_bytes(wanimal);
 
         if (guess == animLow) {
-            if (lang == 2) {
+            if (lang == ukr) {
                 cout << "\nВітаю! Ви вгадали тварину: " << animal << "!" << endl;
             } else {
                 cout << "\nCongratulations! You guessed the animal: " << animal << "!" << endl;
             }
             return true; 
         } else {
-            if (lang == 2) {
+            if (lang == ukr) {
                 cout << "\nНеправильно." << endl;
             } else {
                 cout << "\nIncorrect." << endl;
@@ -436,25 +451,13 @@ public:
     }
 };
 
-class GuessingGame {
-private:
-    unordered_map<string, unordered_set<string>> animals;
-    unordered_map<string, unordered_set<string>> keywords;
-    int lang;
-
-public:
-    GuessingGame(int lang) : lang(lang) {
-        initAnimals();
-        initKeywords();
-    }
-
-    void play() {
+void GuessingGame::play() {
         srand(time(nullptr));
         auto iter = animals.begin();
         advance(iter, rand() % animals.size());
         const string& animal = iter->first;
 
-        if (lang == 2) {
+        if (lang == ukr) {
             cout << "\nКомп'ютер загадав тварину. Спробуйте вгадати, яку саме." << endl;
         } else {
             cout << "\nThe computer guessed the animal. Try to guess which animal the computer chose." << endl;
@@ -462,7 +465,7 @@ public:
 
         string input;
         while (true) {
-            if (lang == 2) {
+            if (lang == ukr) {
                 cout << "\nЩо ви хочете зробити? (1 - задати запитання, 2 - зробити припущення, 3 - завершити гру): ";
             } else {
                 cout << "\nWhat do you want to do? (1 - ask a question, 2 - make a guess, 3 - end the game): ";
@@ -484,7 +487,7 @@ public:
                     break;
                 }
                 case 3: {
-                    if (lang == 2) {
+                    if (lang == ukr) {
                         cout << "\nГра завершена. Чекаємо на вас знову!" << endl;
                     } else {
                         cout << "\nThe game is over. We are waiting for you again!" << endl;
@@ -492,7 +495,7 @@ public:
                     return;
                 }
                 default: {
-                    if (lang == 2) {
+                    if (lang == ukr) {
                         cout << "\nНекоректний вибір. Оберіть 1 для запитання, 2 для припущення, або 3 для завершення гри." << endl;
                     } else {
                         cout << "\nInvalid choice. Choose 1 for asking, 2 for guessing, or 3 to end the game." << endl;
@@ -502,9 +505,8 @@ public:
         }
     }
 
-private:
-    void initAnimals() {
-        if (lang == 2) {
+void GuessingGame::initAnimals() {
+        if (lang == ukr) {
             animals = {
                 {"Тигр", {"хижак", "смугастий", "велика", "гострі зуби", "кігті", "швидка", "ссавець"}},
                 {"Лев", {"хижак", "грива", "велика", "кігті", "гострі зуби", "швидка", "стадна"}},
@@ -543,8 +545,8 @@ private:
         }
     }
 
-    void initKeywords() {
-        if (lang == 2) {
+void GuessingGame::initKeywords() {
+        if (lang == ukr) {
             keywords = {
                 {"хижак", {"хижак", "Хижак", "хижий", "Хижий", "хижа", "Хижа"}},
                 {"травоїдна", {"травоїдна", "Травоїдна", "травоїдний", "Травоїдний"}},
@@ -653,16 +655,12 @@ private:
                 };
         }
     }
-};
 
 int main() {
     Game game;
     while(true) {
         game.menu();
     }
-    
-    GuessingGame game(2);
-    game.play();
     return 0;
 }
 

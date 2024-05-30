@@ -213,8 +213,15 @@ string userInput::inputQuestion() {
 }
 
 void userInput::removeNonAlphabetic(string &str) {
-    regex pattern("\\s+");
-    str = regex_replace(str, pattern, " ");
+    size_t i = 0;
+    while (i < str.length()/2 && (isspace(str[i]) || isspace(str[str.length() - i-1]))) {
+        if (isspace(str[i])) {
+            str.erase(i, 1);
+        }
+        if (isspace(str[str.length()-i-1])) {
+            str.erase(str.length()-i-1);
+        }
+    }
     wstring wstr = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(str);
     for (size_t i = 0; i < wstr.length(); i++) {
         if (!iswalpha(wstr[i]) && !iswspace(wstr[i]) && wstr[i] != L'\'') {

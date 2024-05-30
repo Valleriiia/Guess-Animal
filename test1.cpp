@@ -141,9 +141,9 @@ public:
     static bool getEngAnswer();
     static string inputAnimal(Language lang);
     static string inputQuestion();
+     static void stringToLower(string &str);
 private: 
-    static void removeNonAlphabetic(string &str);
-    static void stringToLower(string &str);
+    static void removeNonAlphabetic(string &str);   
 };
 
 bool userInput::getEngAnswer() {
@@ -373,83 +373,79 @@ void thinkingGame::play() {
 
 class QuestionAsker {
 public:
-    void ask(const string& animal, const unordered_map<string, unordered_set<string>>& animals, const unordered_map<string, unordered_set<string>>& keywords, Language lang) {
-        string question;
-        if (lang == ukr) {
-            cout << "\nЗадайте своє запитання: ";
-        } else {
-            cout << "\nAsk your question: ";
-        }
-        getline(cin, question);
+    void ask(const string& animal, const unordered_map<string, unordered_set<string>>& animals, const unordered_map<string, unordered_set<string>>& keywords, Language lang);
+};
 
-        for (const auto& [key, keys] : keywords) {
-            for (const auto& _key : keys) {
-                if (strstr(question.c_str(), _key.c_str()) != nullptr) {
-                    if (animals.at(animal).count(key) > 0) {
-                        if (lang == ukr) {
-                            cout << "\nТак." << endl;
-                        } else {
-                            cout << "\nYes." << endl;
-                        }
+void QuestionAsker::ask(const string& animal, const unordered_map<string, unordered_set<string>>& animals, const unordered_map<string, unordered_set<string>>& keywords, Language lang) {
+    string question;
+    if (lang == ukr) {
+        cout << "\nЗадайте своє запитання: ";
+    } else {
+        cout << "\nAsk your question: ";
+    }
+    getline(cin, question);
+
+    for (const auto& [key, keys] : keywords) {
+        for (const auto& _key : keys) {
+            if (strstr(question.c_str(), _key.c_str()) != nullptr) {
+                if (animals.at(animal).count(key) > 0) {
+                    if (lang == ukr) {
+                        cout << "\nТак." << endl;
                     } else {
-                        if (lang == ukr) {
-                            cout << "\nНі." << endl;
-                        } else {
-                            cout << "\nNo." << endl;
-                        }
+                        cout << "\nYes." << endl;
                     }
-                    return;
+                } else {
+                    if (lang == ukr) {
+                        cout << "\nНі." << endl;
+                    } else {
+                        cout << "\nNo." << endl;
+                    }
                 }
+                return;
             }
         }
-
-        if (lang == ukr) {
-            cout << "\nНезрозуміле запитання. Спробуйте знову." << endl;
-        } else {
-            cout << "\nSorry, I don't understand the question. Please try again." << endl;
-        }
     }
-};
+    if (lang == ukr) {
+        cout << "\nНезрозуміле запитання. Спробуйте знову." << endl;
+    } else {
+        cout << "\nSorry, I don't understand the question. Please try again." << endl;
+    }
+}
 
 class Guesser {
 public:
-    bool guess(const string& animal, Language lang) {
-        if (lang == ukr) {
-            cout << "\nВаше припущення: ";
-        } else {
-            cout << "\nYour guess: ";
-        }
-        string guess;
-        getline(cin, guess);
-
-        wstring_convert<codecvt_utf8<wchar_t>> converter;
-
-        wstring wguess = converter.from_bytes(guess);
-        wstring wanimal = converter.from_bytes(animal);
-
-        transform(wguess.begin(), wguess.end(), wguess.begin(), towlower);
-        transform(wanimal.begin(), wanimal.end(), wanimal.begin(), towlower);
-
-        guess = converter.to_bytes(wguess);
-        string animLow = converter.to_bytes(wanimal);
-
-        if (guess == animLow) {
-            if (lang == ukr) {
-                cout << "\nВітаю! Ви вгадали тварину: " << animal << "!" << endl;
-            } else {
-                cout << "\nCongratulations! You guessed the animal: " << animal << "!" << endl;
-            }
-            return true; 
-        } else {
-            if (lang == ukr) {
-                cout << "\nНеправильно." << endl;
-            } else {
-                cout << "\nIncorrect." << endl;
-            }
-            return false; 
-        }
-    }
+    bool guess(const string& animal, Language lang);
 };
+
+bool Guesser::guess(const string& animal, Language lang) {
+    if (lang == ukr) {
+        cout << "\nВаше припущення: ";
+    } else {
+        cout << "\nYour guess: ";
+    }
+    string guess;
+    getline(cin, guess);
+
+    userInput::stringToLower(guess);
+    string animLow = animal;
+    userInput::stringToLower(animLow);
+
+    if (guess == animLow) {
+        if (lang == ukr) {
+            cout << "\nВітаю! Ви вгадали тварину: " << animal << "!" << endl;
+        } else {
+            cout << "\nCongratulations! You guessed the animal: " << animal << "!" << endl;
+        }
+        return true; 
+    } else {
+        if (lang == ukr) {
+            cout << "\nНеправильно." << endl;
+        } else {
+            cout << "\nIncorrect." << endl;
+        }
+        return false; 
+    }
+}
 
 void GuessingGame::play() {
     srand(time(nullptr));
@@ -513,39 +509,39 @@ void GuessingGame::play() {
 void GuessingGame::initAnimals() {
     if (lang == ukr) {
         animals = {
-            {"Тигр", {"хижак", "смугастий", "велика", "гострі зуби", "кігті", "швидка", "ссавець"}},
-            {"Лев", {"хижак", "грива", "велика", "кігті", "гострі зуби", "швидка", "стадна"}},
-            {"Лисиця", {"хижак", "хитра", "рижа", "невелика", "швидка", "ссавець", "розумний", "гострі зуби"}},
-            {"Корова", {"травоїдна", "домашня", "має роги", "молоко", "велика", "ссавець", "пасеться", "довгі роги"}},
-            {"Жираф", {"травоїдна", "довга шия", "високий", "плямиста шкіра", "довгі ноги", "має роги"}},
-            {"Верблюд", {"ссавець", "травоїдний", "великий", "довга шия", "горби", "пустельний"}},
-            {"Краб", {"водний", "ракоподібний", "панцир", "хижак", "клешні", "морський"}},
-            {"Каракатиця", {"хижак", "водний", "щупальця", "м'яке тіло", "випускає чорнило", "змінює колір"}},
-            {"Кальмар", {"хижак", "водний", "швидкий", "м'яке тіло", "щупальця", "випускає чорнило", "безхребетний", "велика", "змінює колір"}},
-            {"Орел", {"хижак", "літає", "гострий зір", "велика", "кігті", "швидка", "перната"}},
-            {"Ластівка", {"всеїдна", "літає", "швидка", "невелика", "перната", "гніздиться", "мігрує"}},
-            {"Папуга", {"травоїдна", "літає", "яскраве пір'я", "розмовляє", "невелика", "перната", "розумний"}},
-            {"Кіт", {"ссавець", "домашня", "вуса", "нічний зір", "м'яке хутро", "кігті", "соціальна", "нявкає"}},
-            {"Собака", {"домашня", "нюх", "гавкає", "вірна", "соціальна", "ссавець", "м'яке хутро"}},
-            {"Кролик", {"травоїдна", "домашня", "довгі вуха", "швидка", "моркву", "м'яке хутро", "стрибає"}}
+            {"Тигр", {"ссавець", "хижак", "смугастий", "велика", "гострі зуби", "кігті", "швидка"}},
+            {"Лев", {"ссавець", "хижак", "грива", "велика", "кігті", "гострі зуби", "швидка", "стадна"}},
+            {"Лисиця", {"ссавець", "хижак", "хитра", "рижа", "невелика", "швидка", "розумний", "гострі зуби"}},
+            {"Корова", {"ссавець", "травоїдна", "домашня", "має роги", "молоко", "велика", "пасеться", "довгі роги"}},
+            {"Жираф", {"ссавець", "травоїдна", "довга шия", "високий", "плямиста шкіра", "довгі ноги", "має роги"}},
+            {"Верблюд", {"ссавець", "травоїдна", "великий", "довга шия", "горби", "пустельний"}},
+            {"Краб", {"ракоподібний", "всеїдний", "водний", "панцир", "хижак", "клешні", "морський"}},
+            {"Каракатиця", {"молюск", "хижак", "водний", "щупальця", "м'яке тіло", "випускає чорнило", "змінює колір"}},
+            {"Кальмар", {"молюск", "хижак", "водний", "швидкий", "м'яке тіло", "щупальця", "випускає чорнило", "безхребетний", "велика", "змінює колір"}},
+            {"Орел", {"птах", "хижак", "літає", "гострий зір", "велика", "кігті", "швидка", "перната"}},
+            {"Ластівка", {"птах", "всеїдний", "літає", "швидка", "невелика", "перната", "гніздиться", "мігрує"}},
+            {"Папуга", {"птах", "травоїдна", "літає", "яскраве пір'я", "розмовляє", "невелика", "перната", "розумний"}},
+            {"Кіт", {"ссавець", "хижак", "домашня", "вуса", "нічний зір", "м'яке хутро", "кігті", "соціальна", "нявкає"}},
+            {"Собака", {"ссавець", "всеїдний", "домашня", "нюх", "гавкає", "вірна", "соціальна", "м'яке хутро"}},
+            {"Кролик", {"ссавець", "травоїдна", "домашня", "довгі вуха", "швидка", "моркву", "м'яке хутро", "стрибає"}}
         };
     } else {
         animals = {
-            {"Tiger", {"predator", "striped", "big", "sharp teeth", "claws", "fast", "mammal"}},
-            {"Lion", {"predator", "mane", "big", "claws", "sharp teeth", "fast", "social"}},
-            {"Fox", {"predator", "cunning", "red", "small", "fast", "mammal", "intelligent", "sharp teeth"}},
-            {"Cow", {"herbivore", "domestic", "has horns", "milk", "big", "mammal", "grazing", "long horns"}},
-            {"Giraffe", {"herbivore", "long neck", "tall", "spotted skin", "long legs", "has horns"}},
+            {"Tiger", {"mammal", "predator", "striped", "big", "sharp teeth", "claws", "fast"}},
+            {"Lion", {"mammal", "predator", "mane", "big", "claws", "sharp teeth", "fast", "social"}},
+            {"Fox", {"mammal", "predator", "cunning", "red", "small", "fast", "smart", "sharp teeth"}},
+            {"Cow", {"mammal", "herbivore", "domestic", "has horns", "milk", "big", "grazes", "long horns"}},
+            {"Giraffe", {"mammal", "herbivore", "long neck", "tall", "spotted skin", "long legs", "has horns"}},
             {"Camel", {"mammal", "herbivore", "big", "long neck", "humps", "desert"}},
-            {"Crab", {"aquatic", "crustacean", "shell", "predator", "claws", "marine"}},
-            {"Cuttlefish", {"predator", "aquatic", "tentacles", "soft body", "ink", "changes color"}},
-            {"Squid", {"predator", "aquatic", "fast", "soft body", "tentacles", "ink", "invertebrate", "big", "changes color"}},
-            {"Eagle", {"predator", "flies", "sharp vision", "big", "claws", "fast", "feathered"}},
-            {"Swallow", {"omnivore", "flies", "fast", "small", "feathered", "nests", "migrates"}},
-            {"Parrot", {"herbivore", "flies", "bright feathers", "talks", "small", "feathered", "intelligent"}},
-            {"Cat", {"mammal", "domestic", "whiskers", "night vision", "soft fur", "claws", "social", "meows"}},
-            {"Dog", {"domestic", "sense of smell", "barks", "loyal", "social", "mammal", "soft fur"}},
-            {"Rabbit", {"herbivore", "domestic", "long ears", "fast", "carrots", "soft fur", "hops"}}
+            {"Crab", {"crustacean", "omnivore", "aquatic", "shell", "predator", "claws", "marine"}},
+            {"Cuttlefish", {"mollusk", "predator", "aquatic", "tentacles", "soft body", "ink", "changes color"}},
+            {"Squid", {"mollusk", "predator", "aquatic", "fast", "soft body", "tentacles", "ink", "invertebrate", "big", "changes color"}},
+            {"Eagle", {"bird", "predator", "flies", "sharp vision", "big", "claws", "fast", "feathered"}},
+            {"Swallow", {"bird", "omnivore", "flies", "fast", "small", "feathered", "nests", "migrates"}},
+            {"Parrot", {"bird", "herbivore", "flies", "bright feathers", "talks", "small", "feathered", "smart"}},
+            {"Cat", {"mammal", "predator", "domestic", "whiskers", "night vision", "soft fur", "claws", "social", "meows"}},
+            {"Dog", {"mammal", "omnivore", "domestic", "smell", "barks", "loyal", "social", "soft fur"}},
+            {"Rabbit", {"mammal", "herbivore", "domestic", "long ears", "fast", "carrots", "soft fur", "jumps"}}
         };
     }
 }
@@ -561,7 +557,7 @@ void GuessingGame::initKeywords() {
             {"домашня", {"домашня", "Домашня", "домашній", "Домашній", "свійська", "Свійська"}},
             {"смугастий", {"смугастий", "Смугастий", "смугаста", "Смугаста",  "зі смугами", "Зі смугами", "в смужках", "В смужках"}},
             {"велика", {"велика", "Велика", "великий", "Великий"}},
-            {"гострі зуби", {"гострі зуби", "Гострі зуби", "гострі ікла", "Гострі ікла"}},
+            {"гострі зуби", {"гострі зуби", "Гострі зуби", "ікла", "Ікла"}},
             {"кігті", {"кігті", "Кігті","кігтями", "Кігтями"}},
             {"швидка", {"швидка", "Швидка", "швидкий", "Швидкий", "швидко", "Швидко"}},
             {"ссавець", {"ссавець", "Ссавець", "ссавці", "Ссавці"}},
@@ -571,7 +567,7 @@ void GuessingGame::initKeywords() {
             {"рижа", {"рижа", "Рижа", "рижий", "Рижий", "рудий", "Рудий", "руда", "Руда"}},
             {"невелика", {"невелика", "Невелика", "невеликий", "Невеликий", "маленька", "Маленька", "малий", "Малий"}},
             {"розумний", {"розумний", "Розумний", "розумна", "Розумна"}},
-            {"має роги", {"має роги", "Має роги", "з рогами", "З рогами", "рогатий", "Рогатий", "рогата", "Рогата"}},
+            {"має роги", {"роги", "Роги", "з рогами", "З рогами", "рогатий", "Рогатий", "рогата", "Рогата"}},
             {"молоко", {"молоко", "Молоко"}},
             {"пасеться", {"пасеться", "Пасеться", "пасти", "Пасти"}},
             {"довга шия", {"довга шия", "Довга шия", "довгу шию", "Довгу шию"}},
@@ -587,8 +583,8 @@ void GuessingGame::initKeywords() {
             {"випускає чорнило", {"випускає чорнило", "Випускає чорнило", "чорнило", "Чорнило"}},
             {"змінює колір", {"змінює колір", "Змінює колір", "змінювати колір", "Змінювати колір", "колір"}},
             {"безхребетний", {"безхребетний", "Безхребетний", "безхребетна", "Безхребетна"}},
-            {"гострий зір", {"гострий зір", "Гострий зір", "зір"}},
-            {"перната", {"перната", "Перната", "пернатий", "Пернатий", "з пір'ям", "З пір'ям"}},
+            {"гострий зір", {"гострий зір", "Гострий зір"}},
+            {"перната", {"перната", "Перната", "пернатий", "Пернатий", "з пір'ям", "З пір'ям", "пір'я", "Пір'я"}},
             {"гніздиться", {"гніздиться", "Гніздиться", "гніздиться в", "Гніздиться в", "гніздо", "Гніздо"}},
             {"мігрує", {"мігрує", "Мігрує", "мігрують", "Мігрують", "мігруючий", "Мігруючий"}},
             {"яскраве пір'я", {"яскраве пір'я", "Яскраве пір'я"}},
@@ -597,13 +593,16 @@ void GuessingGame::initKeywords() {
             {"нічний зір", {"нічний зір", "Нічний зір", "бачить вночі", "Бачить вночі"}},
             {"м'яке хутро", {"м'яке хутро", "М'яке хутро"}},
             {"соціальна", {"соціальна", "Соціальна", "соціальний", "Соціальний"}},
-            {"нявкає", {"нявкає", "Нявкає", "мяукає", "Мяукає", "мяу", "Мяу"}},
+            {"нявкає", {"нявкає", "Нявкає", "мяукає", "Мяукає", "Няв", "няв"}},
             {"нюх", {"нюх", "Нюх", "запах", "Запах", "чутливий до запахів", "Чутливий до запахів"}},
             {"гавкає", {"гавкає", "Гавкає", "гав", "Гав", "гавкати", "Гавкати"}},
             {"вірна", {"вірна", "Вірна", "вірний", "Вірний"}},
             {"моркву", {"моркву", "Моркву", "морква", "Морква"}},
             {"довгі вуха", {"довгі вуха", "Довгі вуха", "вуха"}},
-            {"стрибає", {"стрибає", "Стрибає", "стрибати", "Стрибати"}}
+            {"стрибає", {"стрибає", "Стрибає", "стрибати", "Стрибати"}},
+            {"птах", {"птах", "Птах", "птахи", "Птахи", "перната", "Перната", "пернатий", "Пернатий"}},
+            {"ракоподібний", {"ракоподібний", "Ракоподібний"}},
+            {"молюск", {"молюск", "Молюск", "молюски", "Молюски", "безхребетний", "Безхребетний"}}
         };
     } else {
         keywords = {
@@ -615,7 +614,7 @@ void GuessingGame::initKeywords() {
             {"domestic", {"domestic", "Domestic", "tame", "Tame"}},
             {"striped", {"striped", "Striped", "stripes", "Stripes"}},
             {"big", {"big", "Big", "large", "Large"}},
-            {"sharp teeth", {"sharp teeth", "Sharp teeth", "sharp fangs", "Sharp fangs"}},
+            {"sharp teeth", {"sharp teeth", "Sharp teeth", "fangs", "Fangs", "teeth", "Teeth"}},
             {"claws", {"claws", "Claws"}},
             {"fast", {"fast", "Fast", "quick", "Quick"}},
             {"mammal", {"mammal", "Mammal", "mammals", "Mammals"}},
@@ -650,14 +649,17 @@ void GuessingGame::initKeywords() {
             {"whiskers", {"whiskers", "Whiskers"}},
             {"night vision", {"night vision", "Night vision"}},
             {"soft fur", {"soft fur", "Soft fur"}},
-            {"meows", {"meows", "Meows", "meowing", "Meowing"}},
+            {"meows", {"meows", "Meows", "meowing", "Meowing", "meow", "Meow",}},
             {"sense of smell", {"sense of smell", "Sense of smell"}},
-            {"barks", {"barks", "Barks", "barking", "Barking"}},
+            {"barks", {"barks", "Barks", "barking", "Barking", "bark", "Bark"}},
             {"loyal", {"loyal", "Loyal"}},
             {"carrots", {"carrots", "Carrots"}},
             {"long ears", {"long ears", "Long ears"}},
-            {"hops", {"hops", "Hops", "hopping", "Hopping"}}
-            };
+            {"hops", {"hops", "Hops", "hopping", "Hopping", "jump", "Jump", "jumping", "Jumping"}},
+            {"bird", {"bird", "Bird", "birds", "Birds"}},
+            {"crustacean", {"crustacean", "Crustacean"}},
+            {"mollusk", {"mollusk", "Mollusk", "mollusks", "Mollusks"}}
+        };
     }
 }
 

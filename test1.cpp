@@ -187,12 +187,10 @@ string userInput::inputAnimal(Language lang) {
             char first = newAnimal[0];
             newAnimal = ((first == 'a' || first == 'e' || first == 'u' || first == 'i' || first == 'o') ? "an " : "a ") + newAnimal;
         }
-        if (islower(newAnimal[2]) && islower(newAnimal[3])) {
-            if(isspace(newAnimal[2])) {
-                newAnimal[3] = toupper(newAnimal[3]);
-            } else {
-                newAnimal[2] = toupper(newAnimal[2]);
-            }
+        if(isspace(newAnimal[2])) {
+            newAnimal[3] = toupper(newAnimal[3]);
+        } else {
+            newAnimal[2] = toupper(newAnimal[2]);
         }
     } else {
         wstring animal = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(newAnimal);
@@ -219,7 +217,7 @@ void userInput::removeNonAlphabetic(string &str) {
     str = regex_replace(str, pattern, " ");
     wstring wstr = wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(str);
     for (size_t i = 0; i < wstr.length(); i++) {
-        if (!iswalpha(wstr[i]) && !iswspace(wstr[i])) {
+        if (!iswalpha(wstr[i]) && !iswspace(wstr[i]) && wstr[i] != L'\'') {
             wstr.erase(i, 1);
             i--;
         }

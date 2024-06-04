@@ -1,6 +1,7 @@
 #include <iostream>
-#include <fstream>
-#include <fileManager.h>
+#include "fileManager.h"
+#ifndef ADD_H
+#define ADD_H
 
 enum Language {ukr, eng};
 
@@ -13,3 +14,4 @@ public:
     void setLanguage();
     void menu();
 };
+#endif

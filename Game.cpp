@@ -1,6 +1,6 @@
-#include <Game.h>
-#include <thinkingGame.h>
-#include <GuessingGame.h>
+#include "Game.h"
+#include "thinkingGame.h"
+#include "GuessingGame.h"
 
 void Game::setLanguage() {
     cout  << ((lang == ukr) ? "\nМова" : "\nLanguage") << endl << endl;

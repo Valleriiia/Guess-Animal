@@ -1,6 +1,6 @@
-#include <GuessingGame.h>
-#include <QuestionAsker.h>
-#include <Guesser.h>
+#include "GuessingGame.h"
+#include "QuestionAsker.h"
+#include "Guesser.h"
 
 void GuessingGame::play() {
     srand(time(nullptr));

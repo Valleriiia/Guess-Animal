@@ -1,5 +1,4 @@
-#include <thinkingGame.h>
-#include <userInput.h>
+#include "thinkingGame.h"
 
 void thinkingGame::addQuestion(treeNode* &node) {
     cout << ((lang == ukr) ? "Яку тварину ви загадали?" : "What's your animal?") << endl;

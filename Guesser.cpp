@@ -1,5 +1,4 @@
-#include <Guesser.h>
-#include <userInput.h>
+#include "Guesser.h"
 
 bool Guesser::guess(const string& animal, Language lang) {
     if (lang == ukr) {

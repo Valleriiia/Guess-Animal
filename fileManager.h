@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <treeNode.h>
+#include "treeNode.h"
+#ifndef ADD_H
 
 class fileManager {
 private:
@@ -16,3 +17,4 @@ public:
     void readFromFile(treeNode* &root);
     void writeToFile(treeNode *root);
 };
+#endif

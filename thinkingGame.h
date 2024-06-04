@@ -1,6 +1,5 @@
 #include <iostream>
-#include <Game.h>
-#include <treeNode.h>
+#include "userInput.h"
 
 class thinkingGame : public Game {
 private:

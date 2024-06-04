@@ -1,17 +1,13 @@
 #include <iostream>
 #include <fstream>
-#include <regex>
 #include <locale>
 #include <codecvt>
-#include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
 #include <algorithm>
-#include <codecvt>
-#include <locale>
 
 using namespace std;
 
@@ -132,8 +128,6 @@ void Game::setLanguage() {
         setLanguage();
     }
 }
-
-
 
 class userInput {
 public:

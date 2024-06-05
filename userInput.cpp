@@ -6,6 +6,7 @@
 bool userInput::getEngAnswer() {
     string answer;
     cin >> answer;
+    stringToLower(answer);
     if(answer == "yes" || answer == "y"){
         return true;
     } else if (answer == "no" || answer == "n"){
@@ -19,6 +20,7 @@ bool userInput::getEngAnswer() {
 bool userInput::getUkrAnswer() {
     string answer;
     cin >> answer;
+    stringToLower(answer);
     if(answer == "так" || answer == "та" || answer == "т"){
         return true;
     } else if (answer == "ні" || answer == "н"){

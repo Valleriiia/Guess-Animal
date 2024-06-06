@@ -1,8 +1,11 @@
 #include "QuestionAsker.h"
 #include <cstring>
 
+// Обробляє питання користувача
 void QuestionAsker::ask(const string& animal, const unordered_map<string, unordered_set<string>>& animals, const unordered_map<string, unordered_set<string>>& keywords, Language lang) {
     string question;
+
+    // Просить користувача ввести питання
     if (lang == ukr) {
         cout << "\nЗадайте своє запитання: ";
     } else {
@@ -10,10 +13,13 @@ void QuestionAsker::ask(const string& animal, const unordered_map<string, unorde
     }
     getline(cin, question);
 
+    // Перебирає ключові слова та перевіряє, чи містить запитання будь-яке з них
     for (const auto& [key, keys] : keywords) {
         for (const auto& _key : keys) {
             if (strstr(question.c_str(), _key.c_str()) != nullptr) {
+                // Перевіряє, чи пов’язана тварина з ключовим словом
                 if (animals.at(animal).count(key) > 0) {
+                    // Виводить відповідь на питання
                     if (lang == ukr) {
                         cout << "\nТак." << endl;
                     } else {
@@ -30,6 +36,8 @@ void QuestionAsker::ask(const string& animal, const unordered_map<string, unorde
             }
         }
     }
+
+    // Якщо ключове слово не знайдено, виводить повідомлення про те, що не розуміє питання
     if (lang == ukr) {
         cout << "\nНезрозуміле запитання. Спробуйте знову." << endl;
     } else {

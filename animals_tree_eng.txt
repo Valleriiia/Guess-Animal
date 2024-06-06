@@ -1,39 +1,243 @@
 Does your animal have 4 legs?
-Does your animal say meow?
+Does your animal belong to the cat family?
 Is it big?
 Does it have stripes?
 a Tiger
 #
 #
+Does it have a mane?
 a Lion
 #
 #
+Does it live in the mountains?
+a Snow leopard
+#
+#
+Does your animal spend a lot of time on trees?
+a Leopard
+#
+#
+a Jaguar
+#
+#
+Is it a pet?
 a Cat
 #
 #
-Does it live in a forest?
-Does it hibernate in winter?
-Does it have prickle?
-a Headgehog
+Does it have tufts of hair on its ears?
+Does it have a short tail?
+a Lynx
+#
+#
+a Caracal
+#
+#
+Does it have spotted fur?
+Is your animal very fast?
+a Cheetah
+#
+#
+a Serval
+#
+#
+Is it fluffy?
+a Manul
+#
+#
+a Puma
+#
+#
+Does it live in the forest?
+Does your animal hibernate in winter?
+Does it have spikes?
+a Hedgehog
 #
 #
 a Bear
 #
 #
+Does it change fur color in winter?
+a Hare
+#
+#
+Does it have red fur?
+Does it like nuts?
+a Squirrel
+#
+#
+a Fox
+#
+#
 a Wolf
 #
 #
+Does your animal bark?
 a Dog
 #
 #
-Your animal can flight?
-a Bird
+Can it live on a farm?
+Does it give milk?
+Does your animal say "moo"?
+a Cow
 #
 #
-Your animal can swim?
-a Fish
+a Goat
 #
 #
-a Straus
+Does it have a mane?
+a Horse
+#
+#
+Does your animal walk on two legs?
+a Human
+#
+#
+a Pig
+#
+#
+Does it have humps?
+a Camel
+#
+#
+Does it have a long neck?
+a Giraffe
+#
+#
+Does it have a trunk?
+an Elephant
+#
+#
+Does it giggle?
+a Hyena
+#
+#
+Is your animal a reptile?
+Is it poisonous?
+a Monitor lizard
+#
+#
+Does it have a shell?
+a Turtle
+#
+#
+a Crocodile
+#
+#
+Does your animal often stay in water?
+a Hippopotamus
+#
+#
+Does it have stripes?
+a Zebra
+#
+#
+a Rhinoceros
+#
+#
+Does it have wings?
+Is your animal an insect?
+Does it drink blood?
+a Mosquito
+#
+#
+Is it red?
+a Ladybug
+#
+#
+Does it have beautiful coloring?
+a Butterfly
+#
+#
+Can your animal hover in the air?
+a Dragonfly
+#
+#
+a Fly
+#
+#
+Can it fly?
+Is your animal associated with the USA?
+an Eagle
+#
+#
+Is it associated with vampires?
+a Bat
+#
+#
+Is your animal called a "flying rat"?
+a Pigeon
+#
+#
+Is it brown?
+a Sparrow
+#
+#
+a Crow
+#
+#
+Does your animal live in Antarctica?
+a Penguin
+#
+#
+an Ostrich
+#
+#
+Is your animal a snake?
+Is it poisonous?
+Does it have a "hood"?
+a Cobra
+#
+#
+a Viper
+#
+#
+Is it very long?
+an Anaconda
+#
+#
+a Grass snake
+#
+#
+Does it look like jelly?
+a Jellyfish
+#
+#
+Does it have 8 limbs?
+Does your animal weave webs?
+a Spider
+#
+#
+an Octopus
+#
+#
+Does it have a shell?
+Does it have a tail?
+a Crayfish
+#
+#
+a Crab
+#
+#
+Is your animal a mammal?
+Is it smarter than a human?
+a Dolphin
+#
+#
+a Whale
+#
+#
+Is your animal a fish?
+Is it very big?
+a Catfish
+#
+#
+Is it long?
+a Pike
+#
+#
+a Perch
+#
+#
+a Squid
 #
 #

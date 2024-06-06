@@ -69,7 +69,7 @@ void Game::menu() {
     thinkingGame tgame(lang);
     GuessingGame ggame(lang);
 
-    // Відкриває пункт меню відповідно до введення користувача
+    // Обробляє введення користувача
     switch (choice) {
         case 1:
             // Розпочинає гру загадування тварини

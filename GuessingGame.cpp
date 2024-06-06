@@ -2,7 +2,16 @@
 #include "QuestionAsker.h"
 #include "Guesser.h"
 
+// Конструктор класу
+GuessingGame::GuessingGame(Language l) {
+        lang = l;
+        initAnimals();
+        initKeywords();
+    }
+
+// Починає нову гру
 void GuessingGame::play() {
+    // Обирає рандомну тварину зі списку
     srand(time(nullptr));
     auto iter = animals.begin();
     advance(iter, rand() % animals.size());
@@ -14,13 +23,18 @@ void GuessingGame::play() {
     }
 
     int input;
+
+    // Входить у цикл, щоб неодноразово запитувати у користувача введення, доки він не вгадає правильно або не вирішить вийти
     while (true) {
+        // Виводить під меню режиму гри
         if (lang == ukr) {
             cout << "\nЩо ви хочете зробити? (1 - задати запитання, 2 - зробити припущення, 3 - завершити гру): ";
         } else {
             cout << "\nWhat do you want to do? (1 - ask a question, 2 - make a guess, 3 - end the game): ";
         }
         cin >> input;
+
+        // Перевіряє правельність введення
         if (cin.fail()) {
             cin.clear();
             cin.ignore(32767, '\n');
@@ -28,13 +42,17 @@ void GuessingGame::play() {
             continue;
         }
         cin.ignore();
+
+        // Опрацьовує введення користувача
         switch (input) {
             case 1: {
+                // Переходить до питання
                 QuestionAsker asker;
                 asker.ask(animal, animals, keywords, lang);
                 break;
             }
             case 2: {
+                // Переходить до припущення
                 Guesser guesser;
                 bool correct = guesser.guess(animal, lang);
                 if (correct) {
@@ -43,6 +61,7 @@ void GuessingGame::play() {
                 break;
             }
             case 3: {
+                // Виходить з режиму гри
                 if (lang == ukr) {
                     cout << "\nГра завершена. Чекаємо на вас знову!" << endl;
                 } else {
@@ -61,6 +80,7 @@ void GuessingGame::play() {
     }
 }
 
+// Ініціалізує меп тварин
 void GuessingGame::initAnimals() {
     if (lang == ukr) {
         animals = {
@@ -101,6 +121,7 @@ void GuessingGame::initAnimals() {
     }
 }
 
+// Ініціалізує меп ключових слів
 void GuessingGame::initKeywords() {
     if (lang == ukr) {
         keywords = {

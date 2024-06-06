@@ -8,11 +8,7 @@ private:
     unordered_map<string, unordered_set<string>> keywords;
 
 public:
-    GuessingGame(Language l) {
-        lang = l;
-        initAnimals();
-        initKeywords();
-    }
+    GuessingGame(Language l);
     void play();
 private:
     void initAnimals();

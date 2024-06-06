@@ -72,7 +72,7 @@ void thinkingGame::question(treeNode *root) {
     }
 }
 
-// Починаєнову гру
+// Починає нову гру
 void thinkingGame::play() {
     // Зчитує ігорове дерево з файлу
     files.readFromFile(treeRoot);

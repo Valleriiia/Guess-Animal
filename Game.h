@@ -10,7 +10,7 @@ protected:
     enum Language lang;
     fileManager files;
 public:
-    Game() {lang = ukr;}
+    Game();
     void setLanguage();
     void menu();
 };

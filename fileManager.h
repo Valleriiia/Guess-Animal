@@ -11,7 +11,7 @@ private:
     void write(treeNode* root);
 public:
     fileManager() {}
-    fileManager(string name) {filename = name;}
+    fileManager(string name);
     void setFilename(string name);
     void readAndPrintText();
     void readFromFile(treeNode* &root);

@@ -7,7 +7,7 @@ void QuestionAsker::ask(const string& animal, const unordered_map<string, unorde
 
     // Просить користувача ввести питання
     if (lang == ukr) {
-        cout << "\nЗадайте своє запитання: ";
+        cout << "\nПоставте своє запитання: ";
     } else {
         cout << "\nAsk your question: ";
     }
